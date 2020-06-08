@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GuiRoot name="testGGui" width="400" height="500" layoutX="100" layoutY="100" controller="pers.crobin.game.gui.GuiController">
+    <style>
+        <radius>5</radius>
+        <color name="rootColor" r="213" g="243" b="244" a="200"/>
+        <color name="btnColor" r="255" g="170" b="86" a="200"/>
+        <color name="inputBoxColor" r="153" g="183" b="184" a="180"/>
+        <color name="tipTextColor" r="0" g="0" b="0" a="100"/>
+        <color name="mainTextColor" r="0" g="0" b="0" a="190"/>
+        <color name="errColor" r="255" g="0" b="0" a="255"/>
+        <color name="btnTextColor" r="255" g="255" b="255" a="255"/>
+    </style>
+
+    <children>
+        <TextField name="worldName" width="300" height="40" layoutX="50" layoutY="50" color="#inputBoxColor"/>
+        <TextField name="worldSeed" width="300" height="40" layoutX="50" layoutY="150" color="#inputBoxColor"/>
+
+        <Button name="create" width="120" height="40"
+                layoutX="50" layoutY="420" color="#btnColor" onAction="#buttonClicked"/>
+        <Button name="cancel" width="120" height="40" layoutX="230" layoutY="420" color="#btnColor" onAction="#buttonClicked"/>
+
+        <Text name="worldNameTip" color="#mainTextColor"
+              layoutX="50" layoutY="95" align="left;top">Gui.MainMenu.Tips.WorldName</Text>
+        <Text name="worldSeedTip" color="#mainTextColor" layoutX="50" layoutY="195" align="left;top">Gui.MainMenu.Tips.WorldSeed</Text>
+
+        <Text name="structureText" color="#mainTextColor" layoutX="80" layoutY="248" align="left;top">Gui.MainMenu.Structure</Text>
+        <Text name="cheatText" color="#mainTextColor" layoutX="80" layoutY="278" align="left;top">Gui.MainMenu.Cheat</Text>
+        <Text name="bonusBoxText" color="#mainTextColor" layoutX="80" layoutY="318" align="left;top">Gui.MainMenu.BonusBox</Text>
+
+<!--        <Icon name="check">\f046</Icon>-->
+<!--        <Icon name="nocheck">\f14a</Icon>-->
+<!--        <Icon name="${check}" />-->
+<!--        <Icon></Icon>-->
+
+        <Text name="cheatTipText" color="#tipTextColor" layoutX="80" layoutY="300" align="left;top" fontSize="14">Gui.MainMenu.Tips.Cheat</Text>
+        <Text name="bonusBoxTipText" color="#tipTextColor" layoutX="80" layoutY="340" align="left;top" fontSize="14">Gui.MainMenu.Tips.BonusBox</Text>
+
+        <Text name="flatWrdText" color="#mainTextColor" layoutX="180" layoutY="363" align="left;top">Gui.MainMenu.WorldType.Flat</Text>
+        <Text name="defaultWrdText" color="#mainTextColor" layoutX="80" layoutY="363" align="left;top">Gui.MainMenu.WorldType.Default</Text>
+        <Text name="magnifyWrdText" color="#mainTextColor" layoutX="280" layoutY="363" align="left;top">Gui.MainMenu.WorldType.Magnify</Text>
+
+        <Text name="errTipText" color="#errColor" layoutX="200" layoutY="400" align="center;middle" fontSize="16">Gui.MainMenu.Tips.Error</Text>
+        <Text name="worldOptionText" color="#mainTextColor" layoutX="200" layoutY="15" align="center;middle">Gui.MainMenu.Tips.Head</Text>
+    </children>
+
+</GuiRoot>
