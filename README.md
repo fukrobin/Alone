@@ -189,6 +189,3 @@ public abstract class BaseGui implements IMemoryManager {
     }
 }
 ```
-
-# Alone
->>>>>>> 630a64f... Add README
