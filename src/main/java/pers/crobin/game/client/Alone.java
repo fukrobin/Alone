@@ -1,9 +1,7 @@
 package pers.crobin.game.client;
 
-import pers.crobin.engine.event.EventManager;
 import pers.crobin.engine.event.IEvent;
 import pers.crobin.engine.kernel.BaseEngine;
-import pers.crobin.engine.kernel.EngineThread;
 import pers.crobin.engine.kernel.Linker;
 import pers.crobin.engine.kernel.Window;
 import pers.crobin.engine.scene.Scene;
@@ -103,9 +101,6 @@ public class Alone extends BaseEngine {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        EventManager manager = EngineThread.getEventManager();
-        manager.addEvent(new CustomEvent());
-        manager.register(event -> System.out.println("自定义事件处理程序触发"), CustomEvent.class);
 
         window.show();
     }
