@@ -8,6 +8,10 @@ import pers.crobin.engine.ui.text.Font;
 import pers.crobin.engine.ui.text.TextAlignment;
 import pers.crobin.engine.util.Utils;
 
+import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+
 import static org.lwjgl.nanovg.NanoVG.*;
 
 /**
@@ -62,8 +66,32 @@ public class Canvas {
         nvgText(context, pos.x, pos.y, text);
     }
 
+    public static void drawText(ByteBuffer text, Vector2f pos) {
+        nvgText(context, pos.x, pos.y, text);
+    }
+
+    public static void drawText(CharSequence text, float x, float y) {
+        nvgText(context, x, y, text);
+    }
+
+    public static void drawText(ByteBuffer text, float x, float y) {
+        nvgText(context, x, y, text);
+    }
+
     public static void drawText(NVGTextRow row, Vector2f pos) {
         nnvgText(context, pos.x, pos.y, row.start(), row.end());
+    }
+
+    public static void textBox(float x, float y, float breakRowWidth, CharSequence text) {
+        nvgTextBox(context, x, y, breakRowWidth, text);
+    }
+
+    public static void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text, @Nullable FloatBuffer bounds) {
+        nvgTextBoxBounds(context, x, y, breakRowWidth, text, bounds);
+    }
+
+    public static void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text, @Nullable float[] bounds) {
+        nvgTextBoxBounds(context, x, y, breakRowWidth, text, bounds);
     }
 
     public static int textBreakLines(CharSequence text, float breakRowWidth, NVGTextRow.Buffer buffer) {

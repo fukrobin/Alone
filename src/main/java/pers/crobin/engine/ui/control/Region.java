@@ -85,7 +85,7 @@ public class Region extends BaseControl {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
+    public void draw(float offsetX, float offsetY) {
         Canvas.fillColor(backgroundColor);
         Canvas.drawRoundingRect(position.x + offsetX, position.y + offsetY, size.x, size.y, radius);
 

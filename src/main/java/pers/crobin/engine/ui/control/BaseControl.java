@@ -190,11 +190,10 @@ public abstract class BaseControl {
      * 此控件的绘图方法，因为Gui库的实现并不是直接操作OpenGL，需要一些外部依赖，
      * 因此每个控件都需要实现自己的绘图方法
      *
-     * @param context 绘图的上下文
      * @param offsetX 此控件在窗口中的X轴上的偏移值，通常等于<code>Gui</code>的position.x
      * @param offsetY 此控件在窗口中的Y轴上的偏移值，通常等于<code>Gui</code>的position.y
      */
-    protected abstract void draw(long context, float offsetX, float offsetY);
+    protected abstract void draw(float offsetX, float offsetY);
 
     @Override
     public boolean equals(Object o) {

@@ -3,7 +3,8 @@ package pers.crobin.engine.ui.control;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.joml.Vector4i;
-import org.lwjgl.nanovg.NanoVG;
+import pers.crobin.engine.ui.Canvas;
+import pers.crobin.engine.ui.text.TextAlignment;
 import pers.crobin.engine.util.Utils;
 
 /**
@@ -59,14 +60,14 @@ public class IconText extends Icon {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
-        super.draw(context, offsetX, offsetY);
+    public void draw(float offsetX, float offsetY) {
+        super.draw(offsetX, offsetY);
 
-        NanoVG.nvgFontSize(context, font.getFontSize() - 2);
-        NanoVG.nvgFontFace(context, "sans");
-        NanoVG.nvgTextAlign(context, NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP);
-        NanoVG.nvgFillColor(context, Utils.rgba(textColor, RESULT));
-        NanoVG.nvgText(context, position.x + offsetX + font.getFontSize() + 5, position.y + offsetY + 1, text);
+        Canvas.fontSize(font.getFontSize() - 2);
+        Canvas.fontFace("sans");
+        Canvas.fillColor(textColor);
+        Canvas.textAlign(TextAlignment.TOP_LEFT);
+        Canvas.drawText(text, position.x + offsetX + font.getFontSize() + 5, position.y + offsetY + 1);
     }
 
     @Override

@@ -76,9 +76,9 @@ public class Button extends Region {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
-        super.draw(context, offsetX, offsetY);
-        textControl.draw(context, offsetX, offsetY);
+    public void draw(float offsetX, float offsetY) {
+        super.draw(offsetX, offsetY);
+        textControl.draw(offsetX, offsetY);
     }
 
     public String getText() {

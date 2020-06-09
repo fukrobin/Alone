@@ -2,8 +2,8 @@ package pers.crobin.engine.ui.text;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.lwjgl.nanovg.NanoVG;
 import org.lwjgl.system.MemoryStack;
+import pers.crobin.engine.ui.Canvas;
 import pers.crobin.engine.ui.control.Region;
 import pers.crobin.engine.util.Utils;
 
@@ -20,7 +20,9 @@ public class Text extends Region {
     protected       TextAlignment align;
     protected       String        text;
 
-    /** 为此<code>Text</code>控件定义一个宽度限制，例如 像素，而不是字形或字符数。 如果值> 0， 则将根据需要对该行进行换行，以满足此约束。 */
+    /**
+     * 为此<code>Text</code>控件定义一个宽度限制，例如 像素，而不是字形或字符数。 如果值> 0， 则将根据需要对该行进行换行，以满足此约束。
+     */
     protected float wrappingWidth;
 
     public Text() {
@@ -111,26 +113,24 @@ public class Text extends Region {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
+    public void draw(float offsetX, float offsetY) {
         if (this.text != null) {
-            NanoVG.nvgFontSize(context, font.getFontSize());
-            NanoVG.nvgFontFace(context, font.getFontFace());
-            NanoVG.nvgTextAlign(context, align.getAlign());
-            NanoVG.nvgFillColor(context, Utils.rgba(font.getColor(), RESULT));
+            Canvas.setFont(font);
+            Canvas.textAlign(align);
 
             float x = position.x + offsetX;
             float y = position.y + offsetY;
             if (wrappingWidth != 0) {
-                NanoVG.nvgTextBox(context, x, y, wrappingWidth, text);
+                Canvas.textBox(x, y, wrappingWidth, text);
                 try (MemoryStack stack = MemoryStack.stackPush()) {
-                    FloatBuffer floatBuffer = stack.mallocFloat(4);
                     // 测量Text的文本区域边界
-                    NanoVG.nvgTextBoxBounds(context, x, y, wrappingWidth, text, floatBuffer);
+                    FloatBuffer floatBuffer = stack.mallocFloat(4);
+                    Canvas.textBoxBounds(x, y, wrappingWidth, text, floatBuffer);
                     size.x = floatBuffer.get(2) - floatBuffer.get(0);
                     size.y = floatBuffer.get(3) - floatBuffer.get(1);
                 }
             } else {
-                NanoVG.nvgText(context, x, y, text);
+                Canvas.drawText(text, x, y);
             }
         }
     }

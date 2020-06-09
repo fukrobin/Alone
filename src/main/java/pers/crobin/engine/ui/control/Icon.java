@@ -2,9 +2,10 @@ package pers.crobin.engine.ui.control;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.lwjgl.nanovg.NanoVG;
 import pers.crobin.engine.geometry.Bounds;
+import pers.crobin.engine.ui.Canvas;
 import pers.crobin.engine.ui.text.Font;
+import pers.crobin.engine.ui.text.TextAlignment;
 import pers.crobin.engine.util.Utils;
 
 import java.nio.ByteBuffer;
@@ -67,13 +68,10 @@ public class Icon extends BaseControl {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
+    public void draw(float offsetX, float offsetY) {
         if (iconBuffer != null) {
-            NanoVG.nvgFontSize(context, font.getFontSize());
-            NanoVG.nvgFontFace(context, font.getFontFace());
-            NanoVG.nvgTextAlign(context, NanoVG.NVG_ALIGN_LEFT | NanoVG.NVG_ALIGN_TOP);
-            NanoVG.nvgFillColor(context, Utils.rgba(font.getColor(), RESULT));
-            NanoVG.nvgText(context, position.x + offsetX, position.y + offsetY, iconBuffer);
+            Canvas.setFont(font, TextAlignment.TOP_LEFT);
+            Canvas.drawText(iconBuffer, position.x + offsetX, position.y + offsetY);
         }
     }
 

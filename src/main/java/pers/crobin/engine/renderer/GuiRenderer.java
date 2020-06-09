@@ -43,7 +43,7 @@ public class GuiRenderer extends BaseRenderer<List<BaseGui>> {
             if (gui.isDisable()) {
                 iterator.remove();
             } else if (gui.isVisible()) {
-                gui.draw(c, window);
+                gui.draw(window);
             }
         }
 

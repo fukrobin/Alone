@@ -118,8 +118,8 @@ public class TextField extends Region {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
-        super.draw(context, offsetX, offsetY);
+    public void draw(float offsetX, float offsetY) {
+        super.draw(offsetX, offsetY);
         float x = offsetX + position.x + 2;
         float y = offsetY + position.y;
 

@@ -44,7 +44,7 @@ public abstract class BaseGui implements IMemoryManager {
 
     protected abstract void start();
 
-    public abstract void draw(long context, Window window);
+    public abstract void draw(Window window);
 
     @Override
     public boolean equals(Object o) {

@@ -13,20 +13,20 @@ public class GuiJsonLayoutTest extends BaseGui {
         GuiJsonParser jsonParser;
         try {
             jsonParser = new GuiJsonParser("asserts/ui/mainMenu.json");
-            parent = jsonParser.parse();
+            parent     = jsonParser.parse();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void draw(long context, Window window) {
+    public void draw(Window window) {
         if (window.isResized()) {
             float x = (window.getWidth() - parent.getSize().x) * 0.5f;
             float y = (window.getHeight() - parent.getSize().y) * 0.5f;
             parent.setPosition(x, y);
         }
-        parent.draw(context, 0, 0);
+        parent.draw(0, 0);
     }
 
     @Override

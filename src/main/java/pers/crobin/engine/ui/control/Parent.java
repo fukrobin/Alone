@@ -43,9 +43,9 @@ public class Parent extends Region {
     }
 
     @Override
-    public void draw(long context, float offsetX, float offsetY) {
-        super.draw(context, offsetX, offsetY);
-        children.forEach(control -> control.draw(context, offsetX + this.position.x, offsetY + this.position.y));
+    public void draw(float offsetX, float offsetY) {
+        super.draw(offsetX, offsetY);
+        children.forEach(control -> control.draw(offsetX + this.position.x, offsetY + this.position.y));
     }
 
     @Override
