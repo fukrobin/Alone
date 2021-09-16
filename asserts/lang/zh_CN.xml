@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Language>
+    <Gui>
+        <MainMenu>
+            <Tips>
+                <WorldName>将会保存于: %s</WorldName>
+                <WorldSeed>留白以生成随机世界种子</WorldSeed>
+                <Cheat>可以使用/gameMode、/xp等命令</Cheat>
+                <BonusBox>出生时附赠一些基础装备</BonusBox>
+                <Error>世界名称不能为空</Error>
+                <Head>世界配置</Head>
+            </Tips>
+
+            <Cheat>开启作弊</Cheat>
+            <BonusBox>奖励箱</BonusBox>
+            <Structure>生成建筑</Structure>
+
+            <WorldType>
+                <Flat>超平坦</Flat>
+                <Default>默认</Default>
+                <Magnify>放大化</Magnify>
+            </WorldType>
+        </MainMenu>
+    </Gui>
+</Language>

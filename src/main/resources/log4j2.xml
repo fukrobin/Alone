@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--status，log4j2自身的日志级别，OFF>FATAL>ERROR>WARN>INFO>DEBUG>TRACE>ALL-->
+<!--monitorInterval，重新读取配置文件的间隔时间，单位为秒-->
+<Configuration status="error" monitorInterval="30">
+    <!--Properties，属性（可选），用来定义常量，之后在其他配置项中通过${变量名}引用-->
+    <Properties>
+        <Property name="LOG_HOME">logs</Property>
+        <!--_TRACE_ID，业务自定义变量-->
+        <property name="ALL_PATTERN">[%d][%level][%thread][%X{_TRACE_ID}][%c{1.}]- %msg -%n</property>
+        <property name="ERROR_PATTERN">[%d][%level][%thread][%X{_TRACE_ID}][%c{1.}]- %msg -[%l]%n</property>
+        <property name="CHARSET">UTF-8</property>
+        <property name="FILE_SIZE">1GB</property>
+        <property name="FILE_INDEX_MAX">30</property>
+    </Properties>
+
+    <!--Appenders，输出源，用于定义日志输出的地方-->
+    <Appenders>
+        <!--控制台-->
+        <Console name="CONSOLE-APPENDER" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>${ALL_PATTERN}</Pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+    <!--Appenders，输出源，用于定义日志输出的地方-->
+    <Appenders>
+        <!--控制台-->
+        <Console name="CONSOLE-APPENDER" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>${ALL_PATTERN}</Pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!--每个配置都必须有一个Root logger，没有name属性、不支持additivity属性-->
+        <!--level：日志输出级别，从低到高分别为：All<TRACE<DEBUG<INFO<WARN<ERROR<FATAL<OFF-->
+        <!--includeLocation：输出位置信息需要栈快照，对性能影响很大，所以异步logger默认关闭该功能，可通过设置为true打开-->
+        <!--AppenderRef：指定该日志输出到哪个Appender-->
+        <!--过滤掉spring和hibernate的一些无用的debug信息-->
+        <logger name="com.example" level="INFO"/>
+        <root level="all">
+            <appender-ref ref="CONSOLE-APPENDER"/>
+        </root>
+    </Loggers>
+</Configuration>

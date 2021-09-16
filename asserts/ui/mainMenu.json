@@ -1,0 +1,133 @@
+{
+  "RootPane": {
+    "layout-x": 100.0,
+    "layout-y": 100.0,
+    "width": 400.0,
+    "height": 500.0,
+    "background-color": "#d5f3f4",
+    "border-color": "#ececec",
+    "children": {
+      "Button": [
+        {
+          "layout-x": 230.0,
+          "layout-y": 420.0,
+          "width": 120.0,
+          "height": 40.0,
+          "background-color": "#0d9c9e",
+          "text-control": {
+            "text": "create",
+            "layout-x": 290.0,
+            "layout-y": 440.0,
+            "width": 120.0,
+            "height": 40.0,
+            "font-size": 20,
+            "font-face": "sans",
+            "font-color": "#ffffff"
+          }
+        },
+        {
+          "layout-x": 50.0,
+          "layout-y": 420.0,
+          "width": 120.0,
+          "height": 40.0,
+          "background-color": "#0d9c9e",
+          "text-control": {
+            "text": "cancel",
+            "layout-x": 110.0,
+            "layout-y": 440.0,
+            "width": 120.0,
+            "height": 40.0,
+            "font-size": 20,
+            "font-color": "#ffffff"
+          }
+        }
+      ],
+      "Text": [
+        {
+          "text": "Will be saved in: ",
+          "layout-x": 50.0,
+          "layout-y": 95.0,
+          "width": 300.0,
+          "height": 40.0,
+          "font-size": 20,
+          "font-color": "#000000"
+        },
+        {
+          "text": "Leave blank for a random seed",
+          "layout-x": 50.0,
+          "layout-y": 195.0,
+          "width": 300.0,
+          "height": 40.0,
+          "font-size": 20,
+          "font-color": "#000000"
+        },
+        {
+          "text": "Commands like /gamemode, /xp",
+          "layout-x": 80.0,
+          "layout-y": 300.0,
+          "width": 300.0,
+          "height": 40.0,
+          "font-color": "#000000"
+        },
+        {
+          "text": "Some basic items comes with birth",
+          "layout-x": 80.0,
+          "layout-y": 340.0,
+          "width": 300.0,
+          "height": 40.0,
+          "font-color": "#000000"
+        }
+      ],
+      "IconText": [
+        {
+          "icon": "f046",
+          "text": "Bonus box",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 50.0,
+          "layout-y": 315.0
+        },
+        {
+          "icon": "f046",
+          "text": "Generate Structures",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 50.0,
+          "layout-y": 245.0
+        },
+        {
+          "icon": "f096",
+          "text": "Allow Cheats",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 50.0,
+          "layout-y": 275.0
+        },
+        {
+          "icon": "f192",
+          "text": "Default",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 50.0,
+          "layout-y": 363.0
+        },
+        {
+          "icon": "f10c",
+          "text": "Flat",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 160.0,
+          "layout-y": 363.0
+        },
+        {
+          "icon": "f10c",
+          "text": "Magnify",
+          "icon-size": 20,
+          "icon-color": "#1585ff",
+          "layout-x": 250.0,
+          "layout-y": 363.0
+        }
+      ]
+    }
+  }
+}

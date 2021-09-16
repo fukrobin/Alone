@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Language>
+    <Gui>
+        <MainMenu>
+            <Tips>
+                <WorldName>Will be saved in:</WorldName>
+                <WorldSeed>Leave blank for a random seed</WorldSeed>
+                <Cheat>Commands like /gamemode, /xp</Cheat>
+                <BonusBox>Some basic items comes with birth</BonusBox>
+                <Error>World name can't be empty</Error>
+                <Head>World options</Head>
+            </Tips>
+
+            <Cheat>Allow Cheats</Cheat>
+            <BonusBox>Allow Cheats</BonusBox>
+            <Structure>Generate Structures</Structure>
+
+            <WorldType>
+                <Flat>Flat</Flat>
+                <Default>Default</Default>
+                <Magnify>Magnify</Magnify>
+            </WorldType>
+        </MainMenu>
+    </Gui>
+</Language>
