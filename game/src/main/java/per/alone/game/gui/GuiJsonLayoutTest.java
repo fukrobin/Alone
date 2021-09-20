@@ -1,0 +1,36 @@
+package per.alone.game.gui;
+
+import per.alone.engine.ui.BaseGui;
+import per.alone.engine.ui.GuiJsonParser;
+import per.alone.stage.Window;
+
+import java.io.IOException;
+
+public class GuiJsonLayoutTest extends BaseGui {
+    @Override
+    protected void start() {
+
+        GuiJsonParser jsonParser;
+        try {
+            jsonParser = new GuiJsonParser("asserts/ui/mainMenu.json");
+            parent     = jsonParser.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void draw(Window window) {
+        if (window.isResized()) {
+            float x = (window.getWidth() - parent.getSize().x) * 0.5f;
+            float y = (window.getHeight() - parent.getSize().y) * 0.5f;
+            parent.setPosition(x, y);
+        }
+        parent.draw(0, 0);
+    }
+
+    @Override
+    public void cleanup() {
+
+    }
+}

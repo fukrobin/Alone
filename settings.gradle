@@ -1,2 +1,6 @@
 rootProject.name = 'Alone'
+include 'event'
+include 'engine'
+include 'game'
+include 'common'
 

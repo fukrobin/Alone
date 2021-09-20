@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GuiRoot name="testGGui" width="400" height="500" layoutX="100" layoutY="100"
-         controller="pers.crobin.game.gui.GuiController">
+         controller="GuiController">
     <style>
         <radius>5</radius>
         <color name="rootColor" r="213" g="243" b="244" a="200"/>
