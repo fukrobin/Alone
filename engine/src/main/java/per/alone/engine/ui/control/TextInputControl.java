@@ -1,10 +1,16 @@
 package per.alone.engine.ui.control;
 
+import lombok.Getter;
+import lombok.Setter;
 import per.alone.engine.ui.text.Font;
 import per.alone.engine.util.Utils;
 
-public class
-TextInputControl {
+/**
+ * @author 22136
+ */
+@Getter
+@Setter
+public class TextInputControl {
     /**
      * 此{@link TextInputControl}的文本内容
      */
@@ -13,22 +19,22 @@ TextInputControl {
     /**
      * 此{@link TextInputControl}中用于文本的默认字体。
      */
-    protected final Font          font;
+    protected final Font font;
 
     /**
      * 插入符号在文本中的当前位置
      */
-    protected       int           caretPosition;
+    protected int caretPosition;
 
     /**
      * {@link TextInputControl} 需要显示的提示文本，如果未设置，则为null
      */
-    protected       String        promptText;
+    protected String promptText;
 
     /**
      * 指示此{@link TextInputControl}是否可由用户编辑
      */
-    protected       boolean       edit;
+    protected boolean edit;
 
     public TextInputControl() {
         caretPosition = 0;
@@ -42,48 +48,8 @@ TextInputControl {
         return this.text.length();
     }
 
-    public int getCaretPosition() {
-        return caretPosition;
-    }
-
-    public TextInputControl setCaretPosition(int caretPosition) {
-        this.caretPosition = caretPosition;
-        return this;
-    }
-
     public String getText() {
         return text.toString();
-    }
-
-    public TextInputControl setText(String text) {
-        this.text.replace(0, this.text.length(), text);
-        return this;
-    }
-
-    public void clear() {
-        text.setLength(0);
-    }
-
-    public String getPromptText() {
-        return promptText;
-    }
-
-    public TextInputControl setPromptText(String promptText) {
-        this.promptText = promptText;
-        return this;
-    }
-
-    public boolean isEdit() {
-        return edit;
-    }
-
-    public TextInputControl setEdit(boolean edit) {
-        this.edit = edit;
-        return this;
-    }
-
-    public Font getFont() {
-        return font;
     }
 
     public String getText(int start, int end) {
@@ -96,6 +62,15 @@ TextInputControl {
         }
 
         return this.text.substring(start, end);
+    }
+
+    public TextInputControl setText(String text) {
+        this.text.replace(0, this.text.length(), text);
+        return this;
+    }
+
+    public void clear() {
+        text.setLength(0);
     }
 
     public void appendText(String text) {

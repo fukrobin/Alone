@@ -19,7 +19,7 @@ public class IconText extends Icon {
 
     private final Vector4i textColor;
 
-    private       String   text;
+    private String text;
 
     IconText() {
         super();
@@ -37,38 +37,23 @@ public class IconText extends Icon {
         this.font.setFontSize(iconSize);
     }
 
-    public String getText() {
-        return text;
+    public void setTextColor(Vector4i textColor) {
+        this.setTextColor(textColor.x, textColor.y, textColor.z, textColor.w);
     }
 
-    public IconText setText(String text) {
-        this.text = text;
-        return this;
-    }
-
-    public IconText setTextColor(int r, int g, int b, int a) {
+    public void setTextColor(int r, int g, int b, int a) {
         this.textColor.set(r, g, b, a);
-        return this;
-    }
-
-    public Vector4i getTextColor() {
-        return textColor;
-    }
-
-    public IconText setTextColor(Vector4i textColor) {
-        this.textColor.set(textColor);
-        return this;
     }
 
     @Override
-    public void draw(float offsetX, float offsetY) {
-        super.draw(offsetX, offsetY);
+    public void draw(float offsetX, float offsetY, Canvas canvas) {
+        super.draw(offsetX, offsetY, canvas);
 
-        Canvas.fontSize(font.getFontSize() - 2);
-        Canvas.fontFace("sans");
-        Canvas.fillColor(textColor);
-        Canvas.textAlign(TextAlignment.TOP_LEFT);
-        Canvas.drawText(text, position.x + offsetX + font.getFontSize() + 5, position.y + offsetY + 1);
+        canvas.fontSize(font.getFontSize() - 2);
+        canvas.fontFace("sans");
+        canvas.fillColor(textColor);
+        canvas.textAlign(TextAlignment.TOP_LEFT);
+        canvas.drawText(text, position.x + offsetX + font.getFontSize() + 5, position.y + offsetY + 1);
     }
 
     @Override

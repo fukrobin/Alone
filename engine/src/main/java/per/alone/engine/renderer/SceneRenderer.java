@@ -2,23 +2,19 @@ package per.alone.engine.renderer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL31;
-import per.alone.engine.event.EventHandlerManager;
+import per.alone.engine.context.EngineContext;
 import per.alone.engine.global.GlobalVariable;
+import per.alone.engine.kernel.DebugInfo;
+import per.alone.engine.scene.*;
 import per.alone.engine.scene.voxel.Agent;
 import per.alone.engine.scene.voxel.Chunk;
 import per.alone.engine.scene.voxel.VoxelBehavior;
 import per.alone.engine.util.GLHelp;
 import per.alone.engine.util.Utils;
 import per.alone.stage.Window;
-import per.alone.stage.input.KeyEvent;
-import per.alone.stage.input.MouseEvent;
-import pers.crobin.engine.scene.*;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -31,33 +27,31 @@ import static org.lwjgl.opengl.GL30.*;
  * @author fkobin
  * @date 2020/4/5 01:12
  **/
-public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager {
-    private static final Matrix4f      TEMP           = new Matrix4f().translate(0, -5, -5);
+public class SceneRenderer implements RendererComponent {
+    private static final Matrix4f TEMP = new Matrix4f().translate(0, -5, -5);
 
     private final Agent agent;
 
-    private final        List<Scene>   idleScene;
+    private final Scene scene;
 
     /**
      * 使用帧缓冲渲染时，渲染到屏幕需要使用的着色器
      */
-    private              ShaderProgram screenShaderProgram;
+    private ShaderProgram screenShaderProgram;
 
-    private              ShaderProgram skyBoxShaderProgram;
+    private ShaderProgram skyBoxShaderProgram;
 
-    private              ShaderProgram voxelShaderProgram;
+    private ShaderProgram voxelShaderProgram;
 
-    private              ShaderProgram modelShaderProgram;
+    private ShaderProgram modelShaderProgram;
 
-    private              int           uniformBufferObjectMatrices;
+    private int uniformBufferObjectMatrices;
 
-    private              boolean       useFrameBuffer = true;
+    private boolean useFrameBuffer = true;
 
-    private              int           frameBuffer    = -1;
+    private int frameBuffer = -1;
 
-    private              int           renderBuffer;
-
-    private              int           colorAttachment;
+    private int renderBuffer;
 
     private Mesh screenQuad;
 
@@ -65,16 +59,20 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
 
     private Window window;
 
-    private              int           preWidth, preHeight;
+    private int colorAttachment;
+
+    private int preWidth, preHeight;
 
     public SceneRenderer() {
-        agent     = new Agent();
-        idleScene = new LinkedList<>();
+        agent = new Agent();
+        scene = new Scene();
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
     public void initialize() {
-        window = EngineThread.getThreadWindow();
-
         try {
             setupSkyBoxShader();
             setupVoxelShader();
@@ -97,7 +95,7 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
         model.loadInstanceModel();
         instancedMesh = (InstancedMesh) model.getMeshList().get(0);
 
-        setupFrameBuffer();
+        // setupFrameBuffer();
     }
 
     private void setupUniformObject() {
@@ -184,7 +182,7 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
      *
      * @param scene 需要进行渲染的场景
      */
-    private void renderVoxel(Scene scene) {
+    private void renderVoxel(Scene scene, DebugInfo debugInfo) {
         agent.reset(scene.getCamera());
 
         int instancedBuffer = instancedMesh.getInstancedBuffer();
@@ -212,7 +210,7 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
             }
         }
 
-        EngineThread.getDebugInfo().addGameDebugInfo("voxel.render.count", count);
+        debugInfo.addGameDebugInfo("voxel.render.count", count);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         voxelShaderProgram.unbind();
     }
@@ -275,32 +273,31 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
     }
 
     @Override
-    public void render() {
-        if (target != null) {
-            beforeRender();
+    public void render(Window window, EngineContext engineContext) {
+        this.window = window;
+        beforeRender();
 
-            Camera camera = target.getCamera();
-            if (window.isDebugMode()) {
-                GlobalVariable.ENGINE_DEBUG_INFO.push(
-                        String.format("Position: [x: %.3f, y: %.3f, z: %.3f]", camera.getPosition().x,
-                                      camera.getPosition().y, camera.getPosition().z));
-                GlobalVariable.ENGINE_DEBUG_INFO.push(
-                        String.format("Rotation: [x: %.3f, y: %.3f]", camera.getRotation().x, camera.getRotation().y));
-            }
-
-            setupOpenGLState();
-            setupProjectAndView(camera);
-
-            // 渲染所有体素
-            renderVoxel(target);
-
-            // 渲染所有模型
-            renderModel(target);
-
-            // 渲染当前的天空盒
-            renderSkyBox(target);
-            endRender();
+        Camera camera = scene.getCamera();
+        if (window.isDebugMode()) {
+            GlobalVariable.ENGINE_DEBUG_INFO.push(
+                    String.format("Position: [x: %.3f, y: %.3f, z: %.3f]", camera.getPosition().x,
+                                  camera.getPosition().y, camera.getPosition().z));
+            GlobalVariable.ENGINE_DEBUG_INFO.push(
+                    String.format("Rotation: [x: %.3f, y: %.3f]", camera.getRotation().x, camera.getRotation().y));
         }
+
+        setupOpenGLState();
+        setupProjectAndView(camera);
+
+        // 渲染所有体素
+        renderVoxel(scene, engineContext.getDebugInfo());
+
+        // 渲染所有模型
+        renderModel(scene);
+
+        // 渲染当前的天空盒
+        renderSkyBox(scene);
+        endRender();
     }
 
     private void setupOpenGLState() {
@@ -310,37 +307,14 @@ public class SceneRenderer extends BaseRenderer<Scene> implements IMemoryManager
     }
 
     @Override
-    public void setTarget(Scene scene) {
-        Objects.requireNonNull(scene);
-        EventHandlerManager eventHandlerManager = EngineThread.getEventManager();
-        if (target == null) {
-            target = scene;
-            eventHandlerManager.addEventHandler(scene.getCameraRotateHandler(), MouseEvent.class);
-            eventHandlerManager.addEventHandler(scene.getCameraMoveHandler(), KeyEvent.class);
-        } else if (target != scene) {
-            if (!idleScene.contains(target)) {
-                idleScene.add(target);
-            }
-            idleScene.remove(scene);
-
-            eventHandlerManager.unregister(target.getCameraMoveHandler(), KeyEvent.class);
-            eventHandlerManager.unregister(target.getCameraRotateHandler(), MouseEvent.class);
-            target = scene;
-            eventHandlerManager.addEventHandler(target.getCameraRotateHandler(), MouseEvent.class);
-            eventHandlerManager.addEventHandler(target.getCameraMoveHandler(), KeyEvent.class);
-        }
-    }
-
-    @Override
-    public void cleanup() {
+    public void close() {
         glDeleteTextures(colorAttachment);
         glDeleteFramebuffers(frameBuffer);
         glDeleteRenderbuffers(renderBuffer);
 
-        if (target != null) {
-            target.cleanUp();
+        if (scene != null) {
+            scene.cleanUp();
         }
-        idleScene.forEach(Scene::cleanUp);
         agent.cleanup();
     }
 }

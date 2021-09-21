@@ -1,13 +1,14 @@
 package per.alone.engine.renderer;
 
+import lombok.extern.slf4j.Slf4j;
 import per.alone.engine.context.EngineContext;
 import per.alone.engine.context.EngineContextEvent;
 import per.alone.engine.context.SmartEngineContextListener;
-import per.alone.engine.kernel.EngineComponent;
 import per.alone.engine.util.GLHelp;
 import per.alone.event.EventType;
 import per.alone.stage.Window;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -18,11 +19,12 @@ import static org.lwjgl.opengl.GL11.*;
  * @author fkobin
  * @date 2020/3/27 21:29
  **/
-public class RendererManager implements EngineComponent, SmartEngineContextListener {
+@Slf4j
+public class CompositeRenderer implements RendererComponent, SmartEngineContextListener {
     /**
      * 用户自定义渲染器
      */
-    private final List<BaseRenderer<?>> customRenderer;
+    private final List<RendererComponent> rendererList;
 
     /**
      * Scene渲染器
@@ -34,15 +36,14 @@ public class RendererManager implements EngineComponent, SmartEngineContextListe
      */
     private GuiRenderer guiRenderer;
 
-    public RendererManager() {
-        customRenderer = new LinkedList<>();
+    public CompositeRenderer() {
+        rendererList = new LinkedList<>();
     }
 
     @Override
     public boolean supportsEventType(EventType<? extends EngineContextEvent> eventType) {
         return eventType.equals(EngineContextEvent.PREPARED_ENGINE_CONTEXT);
     }
-
 
     @Override
     public void onEngineContextEvent(EngineContextEvent engineContextEvent) {
@@ -51,51 +52,53 @@ public class RendererManager implements EngineComponent, SmartEngineContextListe
         guiRenderer   = engineContext.getGuiRenderer();
 
         sceneRenderer.initialize();
-        guiRenderer.initialize();
 
         GLHelp.setGLState();
     }
 
-    public void render(Window window) {
+    @Override
+    public void render(Window window, EngineContext engineContext) {
         GLHelp.frameBufferClearColor();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         window.resetViewport();
 
-        sceneRenderer.render();
+        sceneRenderer.render(window, engineContext);
 
-        customRenderer.forEach(BaseRenderer::render);
+        for (RendererComponent rendererComponent : rendererList) {
+            rendererComponent.render(window, engineContext);
+        }
 
-        guiRenderer.render();
+        guiRenderer.render(window, engineContext);
     }
 
     /**
      * 添加一个自定义渲染器，自定义的渲染器会在Scene之后，Gui之前本渲染
      *
-     * @param t   自定义的渲染器
-     * @param <T> 渲染器必须继承自{@link BaseRenderer}
+     * @param renderer 渲染器
      */
-    public <T extends BaseRenderer<?>> void addRenderer(T t) {
-        Objects.requireNonNull(t);
-        customRenderer.add(t);
+    public void addRenderer(RendererComponent renderer) {
+        Objects.requireNonNull(renderer);
+        this.rendererList.add(renderer);
     }
 
-    public boolean removeRenderer(BaseRenderer<?> baseRenderer) {
-        if (baseRenderer != null) {
-            return customRenderer.remove(baseRenderer);
+    public boolean removeRenderer(RendererComponent renderer) {
+        if (renderer != null) {
+            return this.rendererList.remove(renderer);
         }
         return false;
     }
 
     @Override
     public void close() {
-        sceneRenderer.cleanup();
-        guiRenderer.cleanup();
+        sceneRenderer.close();
+        guiRenderer.close();
 
-        customRenderer.forEach(BaseRenderer::cleanup);
-    }
-
-    @Override
-    public void update(EngineContext engineContext) {
-
+        for (RendererComponent rendererComponent : rendererList) {
+            try {
+                rendererComponent.close();
+            } catch (IOException e) {
+                log.warn("Renderer[{}] exception occurred during close: {}", rendererComponent.getName(), e);
+            }
+        }
     }
 }

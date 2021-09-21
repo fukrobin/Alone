@@ -83,18 +83,18 @@ public class Region extends BaseControl {
     public <T extends Region> T setBorderColor(int r, int g, int b, int a) {
         this.borderColor.set(r, g, b, a);
 
-        Region region = this.setPosition(10, 10);
+        this.setPosition(10, 10);
         return (T) this;
     }
 
     @Override
-    public void draw(float offsetX, float offsetY) {
-        Canvas.fillColor(backgroundColor);
-        Canvas.drawRoundingRect(position.x + offsetX, position.y + offsetY, size.x, size.y, radius);
+    public void draw(float offsetX, float offsetY, Canvas canvas) {
+        canvas.fillColor(backgroundColor);
+        canvas.drawRoundingRect(position.x + offsetX, position.y + offsetY, size.x, size.y, radius);
 
-        Canvas.strokeColor(borderColor);
-        Canvas.strokeWidth(border);
-        Canvas.stroke();
+        canvas.strokeColor(borderColor);
+        canvas.strokeWidth(border);
+        canvas.stroke();
     }
 
     @Override

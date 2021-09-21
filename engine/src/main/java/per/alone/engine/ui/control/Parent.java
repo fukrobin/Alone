@@ -1,6 +1,7 @@
 package per.alone.engine.ui.control;
 
 import com.google.gson.*;
+import per.alone.engine.ui.Canvas;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Parent extends Region {
     /**
      * 子控件链表
      */
-    private final        List<BaseControl> children;
+    private final List<BaseControl> children;
 
     public Parent() {
         super();
@@ -46,9 +47,11 @@ public class Parent extends Region {
     }
 
     @Override
-    public void draw(float offsetX, float offsetY) {
-        super.draw(offsetX, offsetY);
-        children.forEach(control -> control.draw(offsetX + this.position.x, offsetY + this.position.y));
+    public void draw(float offsetX, float offsetY, Canvas canvas) {
+        super.draw(offsetX, offsetY, canvas);
+        children.forEach(control -> control.draw(offsetX + this.position.x,
+                                                 offsetY + this.position.y,
+                                                 canvas));
     }
 
     @Override

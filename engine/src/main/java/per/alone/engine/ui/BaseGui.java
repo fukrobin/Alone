@@ -20,7 +20,8 @@ public abstract class BaseGui implements Closeable {
     protected boolean disable = false;
 
     protected BaseGui() {
-        this.parent = new Parent().setSize(100, 100);
+        this.parent = new Parent();
+        this.parent.setSize(100, 100);
     }
 
     public boolean isVisible() {
@@ -45,9 +46,7 @@ public abstract class BaseGui implements Closeable {
         return parent;
     }
 
-    protected abstract void start();
-
-    public abstract void draw(Window window);
+    public abstract void draw(Window window, Canvas canvas);
 
     @Override
     public boolean equals(Object o) {

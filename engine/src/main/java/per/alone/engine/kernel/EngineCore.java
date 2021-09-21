@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import per.alone.engine.context.EngineContext;
 import per.alone.engine.context.EngineContextEvent;
 import per.alone.engine.context.EngineContextListener;
+import per.alone.engine.renderer.RendererComponent;
 import per.alone.engine.util.CpuTimer;
 import per.alone.engine.util.GPUTimer;
 import per.alone.engine.util.Timer;
@@ -130,7 +131,7 @@ class EngineCore extends Thread {
      */
     private void applyRendererComponent() {
         for (RendererComponent rendererComponent : getRendererComponent()) {
-            rendererComponent.render(engineContext);
+            rendererComponent.render(window, engineContext);
         }
     }
 
@@ -189,7 +190,6 @@ class EngineCore extends Thread {
     }
 
     private void beforeLoop() {
-        engineContext.getGuiManager().start();
         running = true;
     }
 

@@ -3,11 +3,10 @@ package per.alone.engine.context;
 import lombok.Getter;
 import lombok.Setter;
 import per.alone.engine.kernel.DebugInfo;
+import per.alone.engine.renderer.CompositeRenderer;
 import per.alone.engine.renderer.GuiRenderer;
-import per.alone.engine.renderer.RendererManager;
 import per.alone.engine.renderer.SceneRenderer;
 import per.alone.engine.sound.SoundManager;
-import per.alone.engine.ui.GuiManager;
 import per.alone.event.EventHandlerManager;
 import per.alone.event.EventQueue;
 
@@ -22,9 +21,7 @@ import java.io.Closeable;
 public final class EngineContext implements Closeable {
     private final GuiRenderer guiRenderer;
 
-    private final GuiManager guiManager;
-
-    private final RendererManager rendererManager;
+    private final CompositeRenderer compositeRenderer;
 
     private final SceneRenderer sceneRenderer;
 
@@ -41,9 +38,8 @@ public final class EngineContext implements Closeable {
     private int ups;
 
     public EngineContext() {
-        guiManager          = new GuiManager();
-        guiRenderer         = new GuiRenderer(guiManager.getGuiList());
-        rendererManager     = new RendererManager();
+        guiRenderer         = new GuiRenderer();
+        compositeRenderer   = new CompositeRenderer();
         sceneRenderer       = new SceneRenderer();
         soundManager        = new SoundManager();
         eventHandlerManager = new EventHandlerManager();
@@ -54,7 +50,6 @@ public final class EngineContext implements Closeable {
     @Override
     public void close() {
         soundManager.close();
-        guiManager.close();
-        rendererManager.close();
+        compositeRenderer.close();
     }
 }

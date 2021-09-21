@@ -57,7 +57,7 @@ public class TextField extends Region {
                     // input
                     Queue<Integer> codePointList = EngineThread.getThreadWindow().getInputQueue();
                     int insertPos = inputControl.caretPosition;
-                    Canvas.fontSize(inputControl.font.getFontSize());
+                    canvas.fontSize(inputControl.font.getFontSize());
                     for (Integer integer : codePointList) {
                         char[] chars = Character.toChars(integer);
 
@@ -67,7 +67,7 @@ public class TextField extends Region {
 
                         // 只有插入字符后才能得知是否已经超出字符区域
                         // 限制文字内容区域
-                        int rowLines = Canvas.textBreakLines(inputControl.text, size.x - 4, BUFFER);
+                        int rowLines = canvas.textBreakLines(inputControl.text, size.x - 4, BUFFER);
                         if (rowLines > 1) {
                             for (int i = 0; i < chars.length; i++) {
                                 // 迭代结束后caretPosition会被覆盖，此处需要更新insertPos；
@@ -124,23 +124,23 @@ public class TextField extends Region {
     }
 
     @Override
-    public void draw(float offsetX, float offsetY) {
-        super.draw(offsetX, offsetY);
+    public void draw(float offsetX, float offsetY, Canvas canvas) {
+        super.draw(offsetX, offsetY, canvas);
         float x = offsetX + position.x + 2;
         float y = offsetY + position.y;
 
-        Canvas.setFont(inputControl.font, TextAlignment.CENTER_LEFT);
-        Canvas.drawText(inputControl.text, new Vector2f(x, y + size.y * 0.5f));
+        canvas.setFont(inputControl.font, TextAlignment.CENTER_LEFT);
+        canvas.drawText(inputControl.text, new Vector2f(x, y + size.y * 0.5f));
         if (focus) {
             // 绘制光标
             int caret = inputControl.caretPosition;
             // 无字符串时，此处的代码有问题，需要清空BUFFER内的数据
             if (caret > 0) {
-                Canvas.textBreakLines(inputControl.getText(0, inputControl.caretPosition), size.x - 4, BUFFER);
+                canvas.textBreakLines(inputControl.getText(0, inputControl.caretPosition), size.x - 4, BUFFER);
                 NVGTextRow row = BUFFER.get(0);
-                Canvas.drawLine(x + row.maxx(), y + 5, x + row.maxx(), y - 5 + size.y);
+                canvas.drawLine(x + row.maxx(), y + 5, x + row.maxx(), y - 5 + size.y);
             } else {
-                Canvas.drawLine(x, y + 5, x, y - 5 + size.y);
+                canvas.drawLine(x, y + 5, x, y - 5 + size.y);
             }
         }
     }

@@ -6,7 +6,6 @@ import org.joml.Vector4i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import per.alone.engine.geometry.Bounds;
@@ -39,8 +38,7 @@ import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 import static org.lwjgl.stb.STBImage.*;
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memUTF8;
+import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * Created by Administrator on 2020/4/4.
@@ -50,24 +48,24 @@ import static org.lwjgl.system.MemoryUtil.memUTF8;
  * @Description
  **/
 public class Utils {
-    private static final Logger                   LOGGER                = LoggerFactory.getLogger("Util");
+    private static final Logger LOGGER = LoggerFactory.getLogger("Util");
 
-    private static final ThreadFactory            FACTORY
-                                                                        = new ThreadFactoryBuilder().setNameFormat(
+    private static final ThreadFactory FACTORY
+            = new ThreadFactoryBuilder().setNameFormat(
             "alone-pool-%d").build();
 
-    private static final ThreadPoolExecutor       THREAD_POOL_EXECUTOR  = new ThreadPoolExecutor(10, 100, 1L,
-                                                                                                 TimeUnit.SECONDS,
-                                                                                                 new LinkedBlockingDeque<>(
-                                                                                                         1000),
-                                                                                                 FACTORY,
-                                                                                                 new ThreadPoolExecutor.AbortPolicy());
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(10, 100, 1L,
+                                                                                          TimeUnit.SECONDS,
+                                                                                          new LinkedBlockingDeque<>(
+                                                                                                  1000),
+                                                                                          FACTORY,
+                                                                                          new ThreadPoolExecutor.AbortPolicy());
 
     private static final ScheduledExecutorService SCHEDULED_THREAD_POOL = Executors.newScheduledThreadPool(2);
 
     private static final LinkedList<ByteBuffer> BUFFERS = new LinkedList<>();
 
-    private static final Pattern HEX_COLOR_PATTERN  = Pattern.compile("^#[0-9a-f]{6}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^#[0-9a-f]{6}$", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern HEX_STRING_PATTERN = Pattern.compile("^[0-9a-f]+", Pattern.CASE_INSENSITIVE);
 
@@ -106,6 +104,9 @@ public class Utils {
      */
     public static ByteBuffer loadResourceToByteBuffer(String resourcePath) throws IOException {
         URL url = Utils.class.getResource(resourcePath);
+        if (url == null) {
+            throw new IOException("cannot find resource from '" + resourcePath + "'");
+        }
 
         int resourceSize = url.openConnection().getContentLength();
 
@@ -119,6 +120,9 @@ public class Utils {
                     resource.put((byte) (b & 0xff));
                 }
             } while (b != -1);
+        } catch (IOException e) {
+            memFree(resource);
+            throw new IOException("load resource from '" + resourcePath + "' fail");
         }
 
         resource.flip();
@@ -331,7 +335,7 @@ public class Utils {
     }
 
     public static void freeBuffer(Buffer buffer) {
-        MemoryUtil.memFree(buffer);
+        memFree(buffer);
     }
 
     public static void freeBuffers(Buffer[] buffers) {
@@ -362,7 +366,7 @@ public class Utils {
 
     public static void cleanUp() {
         for (ByteBuffer buffer : BUFFERS) {
-            MemoryUtil.memFree(buffer);
+            memFree(buffer);
         }
 
         SCHEDULED_THREAD_POOL.shutdownNow();

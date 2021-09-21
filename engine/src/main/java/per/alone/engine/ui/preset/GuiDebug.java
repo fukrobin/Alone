@@ -7,23 +7,20 @@ import per.alone.engine.ui.text.Font;
 import per.alone.engine.ui.text.TextAlignment;
 import per.alone.stage.Window;
 
+import java.io.IOException;
+
 /**
  * @author Administrator
  */
 public class GuiDebug extends BaseGui {
     private final Font font;
 
-    private       int  currentX;
+    private int currentX;
 
-    private       int  currentY;
+    private int currentY;
 
     public GuiDebug() {
         font = new Font(18, "sans");
-    }
-
-    @Override
-    public void start() {
-
     }
 
     @Override
@@ -37,7 +34,7 @@ public class GuiDebug extends BaseGui {
     }
 
     @Override
-    public void draw(Window window) {
+    public void draw(Window window, Canvas canvas) {
         currentX = 0;
         currentY = 0;
 
@@ -46,20 +43,20 @@ public class GuiDebug extends BaseGui {
 
         DebugInfo debugInfo = EngineThread.getDebugInfo();
 
-        Canvas.setFont(font, TextAlignment.TOP_RIGHT);
+        canvas.setFont(font, TextAlignment.TOP_RIGHT);
 
         debugInfo.getEngineInfo().values().forEach(stringBuilder -> {
-            Canvas.drawText(stringBuilder, currentX, currentY);
+            canvas.drawText(stringBuilder, currentX, currentY);
             currentY += font.getFontSize() + 5;
         });
 
 
         currentX = 10;
         currentY = 20;
-        Canvas.textAlign(TextAlignment.TOP_LEFT);
+        canvas.textAlign(TextAlignment.TOP_LEFT);
 
         debugInfo.getGameInfo().values().forEach(stringBuilder -> {
-            Canvas.drawText(stringBuilder, currentX, currentY);
+            canvas.drawText(stringBuilder, currentX, currentY);
             currentY += font.getFontSize() + 5;
         });
     }
@@ -68,9 +65,8 @@ public class GuiDebug extends BaseGui {
         font.setFontSize(fontSize);
     }
 
-
     @Override
-    public void cleanup() {
+    public void close() throws IOException {
 
     }
 }

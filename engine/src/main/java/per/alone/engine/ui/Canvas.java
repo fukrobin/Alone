@@ -1,14 +1,19 @@
 package per.alone.engine.ui;
 
+import lombok.extern.slf4j.Slf4j;
 import org.joml.Vector2f;
 import org.joml.Vector4i;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGTextRow;
+import org.lwjgl.nanovg.NanoVGGL3;
+import org.lwjgl.system.MemoryUtil;
+import per.alone.engine.exception.ComponentLoadException;
 import per.alone.engine.ui.text.Font;
 import per.alone.engine.ui.text.TextAlignment;
 import per.alone.engine.util.Utils;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
@@ -18,114 +23,168 @@ import static org.lwjgl.nanovg.NanoVG.*;
  * @author Administrator
  * @date 2020/6/6:00点46分
  */
+@Slf4j
 public class Canvas {
-    private static final NVGColor TEMP    = NVGColor.create();
 
-    private static       long     context = -1;
+    private static final NVGColor TEMP = NVGColor.create();
 
-    public static long getContext() {
+    private ByteBuffer sansFont;
+
+    private ByteBuffer sansBoldFont;
+
+    private ByteBuffer iconFont;
+
+    private long context = -1;
+
+    public Canvas() {
+        try {
+            loadFont();
+            context = createNvgContext();
+        } catch (Exception e) {
+            throw new ComponentLoadException(e.getMessage(), e);
+        } finally {
+            if (context == -1) {
+                log.error("Could not add font data");
+                cleanup();
+            }
+        }
+    }
+
+    private void loadFont() throws IOException {
+        sansFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
+        sansBoldFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Dengb.ttf");
+        iconFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
+    }
+
+    private long createNvgContext() {
+        long context = NanoVGGL3.nvgCreate(NanoVGGL3.NVG_ANTIALIAS | NanoVGGL3.NVG_DEBUG);
+
+        try {
+            int d = nvgCreateFontMem(context, "sans", sansFont, 0);
+            if (d == -1) {
+                throw new RuntimeException("Could not add font sans.");
+            }
+
+            d = nvgCreateFontMem(context, "sans-bold", sansBoldFont, 0);
+            if (d == -1) {
+                throw new RuntimeException("Could not add font sans-bold.");
+            }
+
+            d = nvgCreateFontMem(context, "icons", iconFont, 0);
+            if (d == -1) {
+                throw new RuntimeException("Could not add font icons.");
+            }
+        } catch (RuntimeException e) {
+            NanoVGGL3.nvgDelete(context);
+            log.error(e.getMessage());
+            return -1;
+        }
         return context;
     }
 
-    public static void setContext(long context) {
-        Canvas.context = context;
+    public long getContext() {
+        return context;
     }
 
-    public static void fontFace(CharSequence face) {
+    public void setContext(long context) {
+        this.context = context;
+    }
+
+    public void fontFace(CharSequence face) {
         nvgFontFace(context, face);
     }
 
-    public static void fontSize(float fontSize) {
+    public void fontSize(float fontSize) {
         nvgFontSize(context, fontSize);
     }
 
-    public static void textColor(Vector4i color) {
+    public void textColor(Vector4i color) {
         fillColor(color);
     }
 
-    public static void textAlign(TextAlignment align) {
+    public void textAlign(TextAlignment align) {
         nvgTextAlign(context, align.getAlign());
     }
 
-    public static void setFont(Font font) {
+    public void setFont(Font font) {
         fontFace(font.getFontFace());
         fontSize(font.getFontSize());
         textColor(font.getColor());
     }
 
-    public static void setFont(Font font, TextAlignment alignment) {
+    public void setFont(Font font, TextAlignment alignment) {
         setFont(font);
         textAlign(alignment);
     }
 
-    public static void drawText(CharSequence text, Vector2f pos, Font font, TextAlignment alignment) {
+    public void drawText(CharSequence text, Vector2f pos, Font font, TextAlignment alignment) {
         setFont(font, alignment);
         nvgText(context, pos.x, pos.y, text);
     }
 
-    public static void drawText(CharSequence text, Vector2f pos) {
+    public void drawText(CharSequence text, Vector2f pos) {
         nvgText(context, pos.x, pos.y, text);
     }
 
-    public static void drawText(ByteBuffer text, Vector2f pos) {
+    public void drawText(ByteBuffer text, Vector2f pos) {
         nvgText(context, pos.x, pos.y, text);
     }
 
-    public static void drawText(CharSequence text, float x, float y) {
+    public void drawText(CharSequence text, float x, float y) {
         nvgText(context, x, y, text);
     }
 
-    public static void drawText(ByteBuffer text, float x, float y) {
+    public void drawText(ByteBuffer text, float x, float y) {
         nvgText(context, x, y, text);
     }
 
-    public static void drawText(NVGTextRow row, Vector2f pos) {
+    public void drawText(NVGTextRow row, Vector2f pos) {
         nnvgText(context, pos.x, pos.y, row.start(), row.end());
     }
 
-    public static void textBox(float x, float y, float breakRowWidth, CharSequence text) {
+    public void textBox(float x, float y, float breakRowWidth, CharSequence text) {
         nvgTextBox(context, x, y, breakRowWidth, text);
     }
 
-    public static void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
-                                     @Nullable FloatBuffer bounds) {
+    public void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
+                              @Nullable FloatBuffer bounds) {
         nvgTextBoxBounds(context, x, y, breakRowWidth, text, bounds);
     }
 
-    public static void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
-                                     @Nullable float[] bounds) {
+    public void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
+                              @Nullable float[] bounds) {
         nvgTextBoxBounds(context, x, y, breakRowWidth, text, bounds);
     }
 
-    public static int textBreakLines(CharSequence text, float breakRowWidth, NVGTextRow.Buffer buffer) {
+    public int textBreakLines(CharSequence text, float breakRowWidth, NVGTextRow.Buffer buffer) {
         return nvgTextBreakLines(context, text, breakRowWidth, buffer);
     }
 
-    public static void beginPath() {
+    public void beginPath() {
         nvgBeginPath(context);
     }
 
-    public static void fillColor(Vector4i color) {
+    public void fillColor(Vector4i color) {
         nvgFillColor(context, Utils.rgba(color, TEMP));
     }
 
-    public static void fill() {
+    public void fill() {
         nvgFill(context);
     }
 
-    public static void stroke() {
+    public void stroke() {
         nvgStroke(context);
     }
 
-    public static void strokeWidth(float width) {
+    public void strokeWidth(float width) {
         nvgStrokeWidth(context, width);
     }
 
-    public static void strokeColor(Vector4i color) {
+    public void strokeColor(Vector4i color) {
         nvgStrokeColor(context, Utils.rgba(color, TEMP));
     }
 
-    public static void drawLine(float fromX, float fromY, float toX, float toY) {
+    public void drawLine(float fromX, float fromY, float toX, float toY) {
         if (context != -1) {
             nvgBeginPath(context);
             nvgMoveTo(context, fromX, fromY);
@@ -134,17 +193,34 @@ public class Canvas {
         }
     }
 
-    public static void drawLine(Vector2f from, Vector2f to) {
+    public void drawLine(Vector2f from, Vector2f to) {
         drawLine(from.x, from.y, to.x, to.y);
     }
 
-    public static void roundingRect(float posX, float posY, float width, float height, float rounding) {
+    public void roundingRect(float posX, float posY, float width, float height, float rounding) {
         nvgRoundedRect(context, posX, posY, width, height, rounding);
     }
 
-    public static void drawRoundingRect(float posX, float posY, float width, float height, float rounding) {
+    public void drawRoundingRect(float posX, float posY, float width, float height, float rounding) {
         beginPath();
         roundingRect(posX, posY, width, height, rounding);
         fill();
+    }
+
+    public void cleanup() {
+        cleanFont();
+        if (context != -1 && context != MemoryUtil.NULL) {
+            NanoVGGL3.nvgDelete(context);
+            context = -1;
+        }
+    }
+
+    private void cleanFont() {
+        MemoryUtil.memFree(sansFont);
+        MemoryUtil.memFree(sansBoldFont);
+        MemoryUtil.memFree(iconFont);
+        sansFont     = null;
+        sansBoldFont = null;
+        iconFont     = null;
     }
 }

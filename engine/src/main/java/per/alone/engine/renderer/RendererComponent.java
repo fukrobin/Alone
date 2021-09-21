@@ -1,8 +1,11 @@
-package per.alone.engine.kernel;
+package per.alone.engine.renderer;
 
 import per.alone.engine.context.EngineContext;
+import per.alone.engine.kernel.EngineComponent;
+import per.alone.stage.Window;
 
 /**
+ * 渲染器组件
  * 渲染组件，默认在更新期间莫作任何操作
  *
  * @author fkrobin
@@ -24,6 +27,8 @@ public interface RendererComponent extends EngineComponent {
      * 渲染
      *
      * @param engineContext 引擎上下文
+     * @param window        窗口
      */
-    void render(EngineContext engineContext);
+    void render(Window window, EngineContext engineContext);
+
 }

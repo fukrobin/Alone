@@ -33,12 +33,12 @@ public class IndexRange {
 
     public static IndexRange valueOf(String value) {
         if (value == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("value cannot be null");
         }
 
         String[] values = value.split(VALUE_DELIMITER);
         if (values.length != 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("value should use ',' delimit");
         }
 
         int start = Integer.parseInt(values[0].trim());

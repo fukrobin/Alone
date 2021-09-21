@@ -1,5 +1,5 @@
 *.drawio
 
-/build/
+**/build/
 /.idea/
 /.gradle/

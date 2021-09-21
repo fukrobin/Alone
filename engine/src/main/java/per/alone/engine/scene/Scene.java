@@ -16,15 +16,14 @@ import java.util.Objects;
  * @author fkobin
  * @date 2020/4/5 01:00
  **/
-@SuppressWarnings("UnstableApiUsage")
 public class Scene {
     private static final float MOUSE_SENSITIVITY = 0.2f;
 
-    private static float             CAMERA_POS_STEP = 0.30f;
+    private static float CAMERA_POS_STEP = 0.30f;
 
-    private final  LinkedList<Chunk> chunkList;
+    private final LinkedList<Chunk> chunkList;
 
-    private final  LinkedList<Model> modelList;
+    private final LinkedList<Model> modelList;
 
     private SkyBox skyBox;
 

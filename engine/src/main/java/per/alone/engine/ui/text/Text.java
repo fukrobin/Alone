@@ -2,6 +2,8 @@ package per.alone.engine.ui.text;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.system.MemoryStack;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.control.Region;
@@ -15,15 +17,18 @@ import java.util.Objects;
  *
  * @author Administrator
  */
+@Getter
+@Setter
 public class Text extends Region {
-    protected final Font          font;
+    protected final Font font;
 
-    protected       TextAlignment align;
+    protected TextAlignment align;
 
-    protected       String        text;
+    protected String text;
 
     /**
-     * 为此<code>Text</code>控件定义一个宽度限制，例如 像素，而不是字形或字符数。 如果值> 0， 则将根据需要对该行进行换行，以满足此约束。
+     * 为此<code>Text</code>控件定义一个宽度限制，例如 像素，而不是字形或字符数。
+     * 如果值> 0， 则将根据需要对该行进行换行，以满足此约束。
      */
     protected float wrappingWidth;
 
@@ -67,71 +72,25 @@ public class Text extends Region {
         }
     }
 
-    public TextAlignment getAlign() {
-        return align;
-    }
-
-    public Text setAlign(TextAlignment align) {
-        this.align = align;
-
-        return this;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Text setText(String text) {
-        Objects.requireNonNull(text);
-        this.text = text;
-
-        return this;
-    }
-
-    /**
-     * Gets the value of the property wrappingWidth.
-     *
-     * @return wrappingWidth.
-     */
-    public float getWrappingWidth() {
-        return wrappingWidth;
-    }
-
-    /**
-     * Sets the value of the wrappingWidth.
-     *
-     * @param wrappingWidth 为此<code>Text</code>控件定义一个宽度限制，例如 像素，而不是字形或字符数。
-     *                      如果值> 0， 则将根据需要对该行进行换行，以满足此约束。
-     * @return {@link Text}
-     */
-    public Text setWrappingWidth(float wrappingWidth) {
-        this.wrappingWidth = wrappingWidth;
-        return this;
-    }
-
-    public Font getFont() {
-        return font;
-    }
-
     @Override
-    public void draw(float offsetX, float offsetY) {
+    public void draw(float offsetX, float offsetY, Canvas canvas) {
         if (this.text != null) {
-            Canvas.setFont(font);
-            Canvas.textAlign(align);
+            canvas.setFont(font);
+            canvas.textAlign(align);
 
             float x = position.x + offsetX;
             float y = position.y + offsetY;
             if (wrappingWidth != 0) {
-                Canvas.textBox(x, y, wrappingWidth, text);
+                canvas.textBox(x, y, wrappingWidth, text);
                 try (MemoryStack stack = MemoryStack.stackPush()) {
                     // 测量Text的文本区域边界
                     FloatBuffer floatBuffer = stack.mallocFloat(4);
-                    Canvas.textBoxBounds(x, y, wrappingWidth, text, floatBuffer);
+                    canvas.textBoxBounds(x, y, wrappingWidth, text, floatBuffer);
                     size.x = floatBuffer.get(2) - floatBuffer.get(0);
                     size.y = floatBuffer.get(3) - floatBuffer.get(1);
                 }
             } else {
-                Canvas.drawText(text, x, y);
+                canvas.drawText(text, x, y);
             }
         }
     }

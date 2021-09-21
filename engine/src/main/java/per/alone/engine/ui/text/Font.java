@@ -1,18 +1,22 @@
 package per.alone.engine.ui.text;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.joml.Vector4i;
 
 /**
  * @author Administrator
  */
+@Getter
+@Setter
 public class Font {
-    public static final int      MIN_FONT_SIZE = 5;
+    public static final int MIN_FONT_SIZE = 5;
 
-    protected final     Vector4i color;
+    protected final Vector4i color;
 
-    protected           int      fontSize;
+    protected int fontSize;
 
-    protected           String   fontFace;
+    protected String fontFace;
 
     public Font() {
         fontSize = 14;
@@ -32,37 +36,17 @@ public class Font {
         this.color    = color;
     }
 
-    public int getFontSize() {
-        return fontSize;
-    }
-
-    public Font setFontSize(int fontSize) {
+    public void setFontSize(int fontSize) {
         if (fontSize > MIN_FONT_SIZE) {
             this.fontSize = fontSize;
         }
-        return this;
     }
 
-    public String getFontFace() {
-        return fontFace;
+    public void setColor(Vector4i color) {
+        setColor(color.x, color.y, color.z, color.w);
     }
 
-    public Font setFontFace(String fontFace) {
-        this.fontFace = fontFace;
-        return this;
-    }
-
-    public Vector4i getColor() {
-        return color;
-    }
-
-    public Font setColor(Vector4i color) {
-        this.color.set(color);
-        return this;
-    }
-
-    public Font setColor(int r, int g, int b, int a) {
+    public void setColor(int r, int g, int b, int a) {
         this.color.set(r, g, b, a);
-        return this;
     }
 }

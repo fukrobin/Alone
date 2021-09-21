@@ -1,40 +1,45 @@
 package per.alone.engine.ui.control;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.joml.Vector2f;
 import org.lwjgl.nanovg.NVGColor;
 import per.alone.engine.event.ActionEvent;
 import per.alone.engine.event.EventHandler;
 import per.alone.engine.geometry.BoundingBox;
 import per.alone.engine.geometry.Bounds;
+import per.alone.engine.ui.Canvas;
 
 import java.util.Objects;
 
 /**
  * @author Administrator
  */
+@Getter
+@Setter
 public abstract class BaseControl {
     protected static final NVGColor RESULT = NVGColor.create();
 
     /**
      * 在Gui中的偏移位置，而不是在整个窗口中的位置
      */
-    protected final        Vector2f position;
+    protected final Vector2f position;
 
     /**
      * 此控件的尺寸
      */
-    protected final        Vector2f size;
+    protected final Vector2f size;
 
     /**
      * 此控件的父控件
      */
-    protected              Parent   parent;
+    protected Parent parent;
 
     /**
      * 可见性，只有可见的 {@link BaseControl} 才能被渲染
      */
-    protected              boolean  visible;
+    protected boolean visible;
 
     /**
      * 鼠标按下事件
@@ -58,109 +63,29 @@ public abstract class BaseControl {
         this.parent   = null;
     }
 
-    public Parent getParent() {
-        return parent;
-    }
-
-    public <T extends BaseControl> T setParent(Parent parent) {
-        this.parent = parent;
-        return (T) this;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public <T extends BaseControl> T setVisible(boolean visible) {
-        this.visible = visible;
-        return (T) this;
-    }
-
 
     //////////////////////////
     /// Position
     //////////////////////////
 
-    public Vector2f getPosition() {
-        return position;
+    public void setPosition(Vector2f position) {
+        setPosition(position.x, position.y);
     }
 
-    public <T extends BaseControl> T setPosition(Vector2f position) {
-        this.position.set(position);
-
-        return (T) this;
-    }
-
-    public <T extends BaseControl> T setPosition(float x, float y) {
+    public void setPosition(float x, float y) {
         this.position.set(x, y);
-        return (T) this;
-    }
-
-    public double getLayoutX() {
-        return position.x;
-    }
-
-    public double getLayoutY() {
-        return position.y;
     }
 
     ///////////////////////////////
     /// Size
     ///////////////////////////////
 
-    public Vector2f getSize() {
-        return size;
+    public void setSize(Vector2f size) {
+        setSize(size.x, size.y);
     }
 
-    public <T extends BaseControl> T setSize(Vector2f size) {
-        this.size.set(size);
-
-        return (T) this;
-    }
-
-    public <T extends BaseControl> T setSize(float width, float height) {
+    public void setSize(float width, float height) {
         this.size.set(width, height);
-        return (T) this;
-    }
-
-    public float getWidth() {
-        return size.x;
-    }
-
-    public float getHeight() {
-        return size.y;
-    }
-
-
-    ///////////////////////////////
-    /// EventHandler
-    ///////////////////////////////
-
-    public EventHandler<ActionEvent> getMousePressedEvent() {
-        return mousePressedEvent;
-    }
-
-    public BaseControl setMousePressedEvent(EventHandler<ActionEvent> mousePressedEvent) {
-        this.mousePressedEvent = mousePressedEvent;
-        return this;
-    }
-
-    public EventHandler<ActionEvent> getMouseReleasedEvent() {
-        return mouseReleasedEvent;
-    }
-
-    public BaseControl setMouseReleasedEvent(EventHandler<ActionEvent> mouseReleasedEvent) {
-        this.mouseReleasedEvent = mouseReleasedEvent;
-        return this;
-    }
-
-    public EventHandler<ActionEvent> getMouseClickedEvent() {
-        return mouseClickedEvent;
-    }
-
-    public BaseControl setMouseClickedEvent(EventHandler<ActionEvent> mouseClickedEvent) {
-        this.mouseClickedEvent = mouseClickedEvent;
-        return this;
     }
 
     public Bounds getLayoutBounds() {
@@ -214,7 +139,7 @@ public abstract class BaseControl {
      * @param offsetX 此控件在窗口中的X轴上的偏移值，通常等于<code>Gui</code>的position.x
      * @param offsetY 此控件在窗口中的Y轴上的偏移值，通常等于<code>Gui</code>的position.y
      */
-    protected abstract void draw(float offsetX, float offsetY);
+    protected abstract void draw(float offsetX, float offsetY, Canvas canvas);
 
     @Override
     public boolean equals(Object o) {
