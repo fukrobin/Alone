@@ -5,20 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector2f;
 import org.lwjgl.nanovg.NVGColor;
-import per.alone.engine.event.ActionEvent;
-import per.alone.engine.event.EventHandler;
 import per.alone.engine.geometry.BoundingBox;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
+import per.alone.event.*;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Administrator
  */
 @Getter
 @Setter
-public abstract class BaseControl {
+public abstract class BaseControl implements EventTarget {
     protected static final NVGColor RESULT = NVGColor.create();
 
     /**
@@ -41,20 +42,7 @@ public abstract class BaseControl {
      */
     protected boolean visible;
 
-    /**
-     * 鼠标按下事件
-     */
-    protected EventHandler<ActionEvent> mousePressedEvent;
-
-    /**
-     * 鼠标释放事件
-     */
-    protected EventHandler<ActionEvent> mouseReleasedEvent;
-
-    /**
-     * 鼠标点击事件
-     */
-    protected EventHandler<ActionEvent> mouseClickedEvent;
+    private Map<EventType<? extends Event>, CompositeEventHandler<? extends Event>> eventHandlerMap;
 
     protected BaseControl() {
         this.position = new Vector2f();
@@ -63,6 +51,42 @@ public abstract class BaseControl {
         this.parent   = null;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Event> CompositeEventHandler<T> buildEventHandlerChain(T event) {
+        CompositeEventHandler<T> temp = new CompositeEventHandler<T>();
+        BaseControl cur = this;
+        do {
+            Set<EventHandler<? super T>> handlerSet =
+                    (Set<EventHandler<? super T>>) cur.eventHandlerMap.get(event.getEventType())
+                                                                      .getEventHandlers();
+            for (EventHandler<? super T> handler : handlerSet) {
+                temp.addEventHandler(handler);
+            }
+            cur = cur.getParent();
+        } while (cur != null);
+        return temp;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final <T extends Event> void addEventHandler(
+            final EventType<T> eventType,
+            final EventHandler<? super T> eventHandler) {
+        CompositeEventHandler<T> handler =
+                (CompositeEventHandler<T>) eventHandlerMap.computeIfAbsent(eventType,
+                                                                           type -> new CompositeEventHandler<T>());
+        handler.addEventHandler(eventHandler);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final <T extends Event> void removeEventHandler(
+            final EventType<T> eventType,
+            final EventHandler<? super T> eventHandler) {
+        if (eventHandlerMap.containsKey(eventType)) {
+            CompositeEventHandler<T> handler = (CompositeEventHandler<T>) eventHandlerMap.get(eventType);
+            handler.removeEventHandler(eventHandler);
+        }
+    }
 
     //////////////////////////
     /// Position

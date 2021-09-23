@@ -36,6 +36,10 @@ public class Canvas {
 
     private long context = -1;
 
+    private final int offsetX;
+
+    private final int offsetY;
+
     public Canvas() {
         try {
             loadFont();
@@ -48,6 +52,8 @@ public class Canvas {
                 cleanup();
             }
         }
+        offsetX = -1;
+        offsetY = -1;
     }
 
     private void loadFont() throws IOException {
@@ -81,6 +87,10 @@ public class Canvas {
         }
         return context;
     }
+
+    /*--------------------------------------------
+    |                  context                   |
+    ============================================*/
 
     public long getContext() {
         return context;
@@ -117,6 +127,11 @@ public class Canvas {
         textAlign(alignment);
     }
 
+
+    /*--------------------------------------------
+    |                  draw                      |
+    ============================================*/
+
     public void drawText(CharSequence text, Vector2f pos, Font font, TextAlignment alignment) {
         setFont(font, alignment);
         nvgText(context, pos.x, pos.y, text);
@@ -130,14 +145,34 @@ public class Canvas {
         nvgText(context, pos.x, pos.y, text);
     }
 
+    /**
+     * 在指定的位置绘制单行字符串
+     *
+     * @param text 文本
+     * @param x    x
+     * @param y    y
+     */
     public void drawText(CharSequence text, float x, float y) {
         nvgText(context, x, y, text);
     }
 
+    /**
+     * 在指定的位置绘制单行字符串
+     *
+     * @param text 文本
+     * @param x    x
+     * @param y    y
+     */
     public void drawText(ByteBuffer text, float x, float y) {
         nvgText(context, x, y, text);
     }
 
+    /**
+     * 在指定的位置绘制单行字符串
+     *
+     * @param row 行
+     * @param pos pos
+     */
     public void drawText(NVGTextRow row, Vector2f pos) {
         nnvgText(context, pos.x, pos.y, row.start(), row.end());
     }

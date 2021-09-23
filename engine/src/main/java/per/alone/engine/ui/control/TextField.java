@@ -23,10 +23,6 @@ public class TextField extends Region {
 
     protected final TextInputControl inputControl;
 
-    protected EventHandler<KeyEvent> charUpdate;
-
-    protected EventHandler<KeyEvent> cursorUpdateHandler;
-
     protected boolean focus;
 
     private double lastTime = 0;

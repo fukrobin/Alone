@@ -20,6 +20,8 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Text extends Region {
+    public static final TextAlignment DEFAULT_ALIGNMENT = TextAlignment.TOP_LEFT;
+
     protected final Font font;
 
     protected TextAlignment align;
@@ -35,7 +37,7 @@ public class Text extends Region {
     public Text() {
         super();
         this.font  = new Font();
-        this.align = TextAlignment.TOP_LEFT;
+        this.align = DEFAULT_ALIGNMENT;
     }
 
     public Text(String text) {
@@ -43,7 +45,7 @@ public class Text extends Region {
         Objects.requireNonNull(text);
         this.font  = new Font();
         this.text  = text;
-        this.align = TextAlignment.TOP_LEFT;
+        this.align = DEFAULT_ALIGNMENT;
     }
 
     @Override
@@ -84,10 +86,10 @@ public class Text extends Region {
                 canvas.textBox(x, y, wrappingWidth, text);
                 try (MemoryStack stack = MemoryStack.stackPush()) {
                     // 测量Text的文本区域边界
-                    FloatBuffer floatBuffer = stack.mallocFloat(4);
-                    canvas.textBoxBounds(x, y, wrappingWidth, text, floatBuffer);
-                    size.x = floatBuffer.get(2) - floatBuffer.get(0);
-                    size.y = floatBuffer.get(3) - floatBuffer.get(1);
+                    FloatBuffer boundBuffer = stack.mallocFloat(4);
+                    canvas.textBoxBounds(x, y, wrappingWidth, text, boundBuffer);
+                    size.x = boundBuffer.get(2) - boundBuffer.get(0);
+                    size.y = boundBuffer.get(3) - boundBuffer.get(1);
                 }
             } else {
                 canvas.drawText(text, x, y);

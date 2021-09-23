@@ -19,15 +19,11 @@ public class Font {
     protected String fontFace;
 
     public Font() {
-        fontSize = 14;
-        fontFace = "sans";
-        color    = new Vector4i(255);
+        this(14, "sans", new Vector4i(255));
     }
 
     public Font(int fontSize, String fontFace) {
-        this.fontSize = fontSize;
-        this.fontFace = fontFace;
-        this.color    = new Vector4i(255);
+        this(fontSize, fontFace, new Vector4i(255));
     }
 
     public Font(int fontSize, String fontFace, Vector4i color) {
