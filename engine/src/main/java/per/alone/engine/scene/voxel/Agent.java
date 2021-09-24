@@ -23,11 +23,10 @@ import java.util.Set;
 import static org.joml.FrustumIntersection.*;
 
 /**
- * Created by Administrator
+ * 代理类，处理与体素相关的操作，如视锥剔除、体素信息获取
  *
  * @author Administrator
  * @date 2020/4/11 02:59
- * @Description 代理类，处理与体素相关的操作，如视锥剔除、体素信息获取
  **/
 public class Agent {
     private static final int ALL_PLANE =

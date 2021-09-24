@@ -1,10 +1,9 @@
 package per.alone.engine.scene.lights;
 
 /**
- * Created by Administrator
+ * 指示光的衰减程度
  *
  * @date 2020/4/19 19:27
- * @Description 指示光的衰减程度
  **/
 public class Attenuation {
     private float constant;

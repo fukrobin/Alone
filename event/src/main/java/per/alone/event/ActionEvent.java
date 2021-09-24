@@ -4,7 +4,7 @@ package per.alone.event;
  * @author Administrator
  */
 public class ActionEvent extends Event {
-    public static final EventType<ActionEvent> ACTION = new EventType<ActionEvent>("ACTION");
+    public static final EventType<ActionEvent> ACTION = new EventType<>("ACTION");
 
     public static final EventType<ActionEvent> ANY    = ACTION;
 

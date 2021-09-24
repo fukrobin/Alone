@@ -1,14 +1,10 @@
 package per.alone.engine.scene;
-/**
- * Created by Administrator on 2020/4/5.
- */
 
 import per.alone.engine.util.GLHelp;
 import per.alone.engine.util.Utils;
 
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
@@ -18,10 +14,9 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 /**
  * @author fkobin
  * @date 2020/4/5 00:21
- * @Description
  **/
 public class SkyBox {
-    private static final float[]  SKYBOX_VERTICES =
+    private static final float[] SKYBOX_VERTICES =
             {-20.0f, 20.0f, -20.0f, -20.0f, -20.0f, -20.0f, 20.0f, -20.0f, -20.0f, 20.0f, -20.0f, -20.0f, 20.0f, 20.0f, -20.0f, -20.0f,
                     20.0f, -20.0f,
 
@@ -40,11 +35,11 @@ public class SkyBox {
                     -20.0f, -20.0f, -20.0f, -20.0f, -20.0f, 20.0f, 20.0f, -20.0f, -20.0f, 20.0f, -20.0f, -20.0f, -20.0f, -20.0f, 20.0f, 20.0f,
                     -20.0f, 20.0f};
 
-    private final        String[] cubeTexturePath;
+    private final String[] cubeTexturePath;
 
-    private              int      cubeTexture     = -1;
+    private int cubeTexture = -1;
 
-    private              int      vao;
+    private int vao;
 
     public SkyBox(String[] cubeTexturePath) {
         this.cubeTexturePath = cubeTexturePath;

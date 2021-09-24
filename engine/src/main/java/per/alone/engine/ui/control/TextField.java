@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.nanovg.NVGTextRow;
 import per.alone.engine.event.EventHandler;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.Color;
 import per.alone.engine.ui.text.TextAlignment;
 import per.alone.stage.input.KeyEvent;
 
@@ -30,7 +31,7 @@ public class TextField extends Region {
     public TextField() {
         border = 3;
         borderColor.set(21, 133, 255, 255);
-        backgroundColor.set(87, 197, 198, 255);
+        backgroundColor = Color.rgba(87, 197, 198, 255);
 
         inputControl = new TextInputControl();
         inputControl.font.setFontSize(16);
@@ -41,9 +42,8 @@ public class TextField extends Region {
         return focus;
     }
 
-    public TextField setFocus(boolean focus) {
+    public void setFocus(boolean focus) {
         this.focus = focus;
-        return this;
     }
 
     public EventHandler<KeyEvent> getCharUpdateHandler() {

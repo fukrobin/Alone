@@ -18,7 +18,7 @@ import java.util.Objects;
  * @author Administrator
  */
 @Getter
-public class Icon extends BaseControl {
+public class Icon extends Widgets {
     private static final Map<Integer, ByteBuffer> CODE_POINT_ICON = new HashMap<>(16);
 
     protected final Font font;

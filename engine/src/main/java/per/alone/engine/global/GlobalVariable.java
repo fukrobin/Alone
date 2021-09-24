@@ -5,11 +5,10 @@ import per.alone.engine.util.Profiler;
 import java.util.LinkedList;
 
 /**
- * Created by Administrator
+ * 管理所有全局变量，如系统属性变量，引擎全局变量
  *
  * @author Administrator
  * @date 2020/4/8 16:28
- * @Description 管理所有全局变量，如系统属性变量，引擎全局变量
  **/
 @SuppressWarnings({"unused"})
 public class GlobalVariable {

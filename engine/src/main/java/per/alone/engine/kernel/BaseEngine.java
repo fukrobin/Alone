@@ -11,9 +11,10 @@ import per.alone.stage.WindowManager;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
+ * 引擎核心
+ *
  * @author fkobin
  * @date 2020/4/4 19:29
- * @Description 引擎核心
  **/
 public abstract class BaseEngine {
     protected static final Logger LOGGER = LoggerFactory.getLogger("BaseEngine");

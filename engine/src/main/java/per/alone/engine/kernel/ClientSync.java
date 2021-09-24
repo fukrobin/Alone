@@ -17,7 +17,7 @@ public class ClientSync {
 
     public ClientSync() {
         sleepDurations.init(1000 * 1000);
-        yieldDurations.init((int) (-(getTime() - getTime()) * 1.333));
+        yieldDurations.init(0);
         nextFrame = getTime();
     }
 

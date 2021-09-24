@@ -16,7 +16,7 @@ public class MouseEvent extends Event {
 
     public static final EventType<MouseEvent> MOUSE_RELEASED = new EventType<>("MOUSE_RELEASED");
 
-    public static final EventType<MouseEvent> MOUSE_MOVED = new EventType<MouseEvent>(MouseEvent.ANY, "MOUSE_MOVED");
+    public static final EventType<MouseEvent> MOUSE_MOVED = new EventType<>(MouseEvent.ANY, "MOUSE_MOVED");
 
     /**
      * 鼠标相对于窗口的水平位置

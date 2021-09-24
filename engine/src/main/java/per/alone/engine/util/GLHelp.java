@@ -1,6 +1,4 @@
-package per.alone.engine.util;/**
- * Created by Administrator on 2020/4/5.
- */
+package per.alone.engine.util;
 
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -14,8 +12,6 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;

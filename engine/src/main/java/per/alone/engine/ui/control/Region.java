@@ -1,99 +1,39 @@
 package per.alone.engine.ui.control;
 
+import com.google.common.base.Objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.joml.Vector4i;
+import lombok.Getter;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.Color;
+import per.alone.engine.ui.layout.Border;
 import per.alone.engine.util.Utils;
-
-import java.util.Objects;
 
 /**
  * @author Administrator
  */
-public class Region extends BaseControl {
-    protected final Vector4i borderColor;
+@Getter
+public class Region extends Parent {
+    protected Color backgroundColor;
 
-    protected final Vector4i backgroundColor;
-
-    protected int radius = 3;
-
-    protected int border = 1;
+    protected Border border;
 
     public Region() {
         super();
-        borderColor     = new Vector4i();
-        backgroundColor = new Vector4i();
-        Utils.hexColorToRgba("#ABD8ED", backgroundColor);
-        Utils.hexColorToRgba("#ececec", borderColor);
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
-
-    ///////////////////////////////
-    /// Background
-    ///////////////////////////////
-
-    public Vector4i getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public <T extends Region> T setBackgroundColor(Vector4i backgroundColor) {
-        this.backgroundColor.set(backgroundColor);
-        return (T) this;
-    }
-
-    public <T extends Region> T setBackground(String hexColor) {
-        backgroundColor.set(Utils.hexColorToRgba(hexColor));
-        return (T) this;
-    }
-
-    public <T extends Region> T setBackground(int r, int g, int b, int a) {
-        this.backgroundColor.set(r, g, b, a);
-        return (T) this;
-    }
-
-    ///////////////////////////////
-    /// Border
-    ///////////////////////////////
-
-    public int getBorder() {
-        return border;
-    }
-
-    public void setBorder(int border) {
-        this.border = border;
-    }
-
-    public Vector4i getBorderColor() {
-        return borderColor;
-    }
-
-    public Region setBorderColor(Vector4i background) {
-        this.borderColor.set(background);
-        return this;
-    }
-
-    public <T extends Region> T setBorderColor(int r, int g, int b, int a) {
-        this.borderColor.set(r, g, b, a);
-
-        this.setPosition(10, 10);
-        return (T) this;
+        backgroundColor = Color.parseHexColor("#ABD8ED");
+        border = new Border(1, 3, Color.parseHexColor("#ececec"));
     }
 
     @Override
     public void draw(float offsetX, float offsetY, Canvas canvas) {
         canvas.fillColor(backgroundColor);
-        canvas.drawRoundingRect(position.x + offsetX, position.y + offsetY, size.x, size.y, radius);
+        canvas.drawRoundingRect(position.x + offsetX,
+                                position.y + offsetY,
+                                size.x, size.y,
+                                border.getRadius());
 
-        canvas.strokeColor(borderColor);
-        canvas.strokeWidth(border);
+        canvas.strokeColor(border.getColor());
+        canvas.strokeWidth(border.getWidth());
         canvas.stroke();
     }
 
@@ -150,24 +90,15 @@ public class Region extends BaseControl {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Region region = (Region) o;
-        return radius == region.radius &&
-               border == region.border &&
-               borderColor.equals(region.borderColor) &&
-               backgroundColor.equals(region.backgroundColor);
+        return Objects.equal(backgroundColor, region.backgroundColor) && Objects.equal(border, region.border);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), borderColor, backgroundColor, radius, border);
+        return Objects.hashCode(super.hashCode(), backgroundColor, border);
     }
 }

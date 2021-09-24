@@ -16,9 +16,6 @@ import per.alone.stage.Window;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -312,9 +309,7 @@ public class SceneRenderer implements RendererComponent {
         glDeleteFramebuffers(frameBuffer);
         glDeleteRenderbuffers(renderBuffer);
 
-        if (scene != null) {
-            scene.cleanUp();
-        }
+        scene.cleanUp();
         agent.cleanup();
     }
 }

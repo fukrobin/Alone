@@ -4,9 +4,6 @@ import org.lwjgl.opengl.GL15;
 import per.alone.engine.global.GlobalVariable;
 import per.alone.engine.util.GLHelp;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
@@ -32,15 +29,15 @@ public class InstancedMesh extends Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-        glBufferData(GL_ARRAY_BUFFER, (positions.length + normals.length + texCoords.length) * 4, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (positions.length + normals.length + texCoords.length) * 4L, GL_STATIC_DRAW);
 
         glBufferSubData(GL_ARRAY_BUFFER, 0, positions);
-        glBufferSubData(GL_ARRAY_BUFFER, positions.length * 4, normals);
-        glBufferSubData(GL_ARRAY_BUFFER, (positions.length + normals.length) * 4, texCoords);
+        glBufferSubData(GL_ARRAY_BUFFER, positions.length * 4L, normals);
+        glBufferSubData(GL_ARRAY_BUFFER, (positions.length + normals.length) * 4L, texCoords);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * 4, 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 3 * 4, positions.length * 4);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 2 * 4, (positions.length + normals.length) * 4);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 3 * 4, positions.length * 4L);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 2 * 4, (positions.length + normals.length) * 4L);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);

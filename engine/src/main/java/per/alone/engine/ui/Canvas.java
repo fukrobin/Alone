@@ -36,9 +36,9 @@ public class Canvas {
 
     private long context = -1;
 
-    private final int offsetX;
+    private int offsetX;
 
-    private final int offsetY;
+    private int offsetY;
 
     public Canvas() {
         try {
@@ -52,14 +52,14 @@ public class Canvas {
                 cleanup();
             }
         }
-        offsetX = -1;
-        offsetY = -1;
+        offsetX = 0;
+        offsetY = 0;
     }
 
     private void loadFont() throws IOException {
-        sansFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
+        sansFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
         sansBoldFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Dengb.ttf");
-        iconFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
+        iconFont = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
     }
 
     private long createNvgContext() {
@@ -127,6 +127,29 @@ public class Canvas {
         textAlign(alignment);
     }
 
+    public void beginPath() {
+        nvgBeginPath(context);
+    }
+
+    public void fillColor(Color color) {
+        nvgFillColor(context, Color.toNVGColor(color));
+    }
+
+    public void fill() {
+        nvgFill(context);
+    }
+
+    public void stroke() {
+        nvgStroke(context);
+    }
+
+    public void strokeWidth(float width) {
+        nvgStrokeWidth(context, width);
+    }
+
+    public void strokeColor(Color color) {
+        nvgStrokeColor(context, Color.toNVGColor(color));
+    }
 
     /*--------------------------------------------
     |                  draw                      |
@@ -195,30 +218,6 @@ public class Canvas {
         return nvgTextBreakLines(context, text, breakRowWidth, buffer);
     }
 
-    public void beginPath() {
-        nvgBeginPath(context);
-    }
-
-    public void fillColor(Vector4i color) {
-        nvgFillColor(context, Utils.rgba(color, TEMP));
-    }
-
-    public void fill() {
-        nvgFill(context);
-    }
-
-    public void stroke() {
-        nvgStroke(context);
-    }
-
-    public void strokeWidth(float width) {
-        nvgStrokeWidth(context, width);
-    }
-
-    public void strokeColor(Vector4i color) {
-        nvgStrokeColor(context, Utils.rgba(color, TEMP));
-    }
-
     public void drawLine(float fromX, float fromY, float toX, float toY) {
         if (context != -1) {
             nvgBeginPath(context);
@@ -232,13 +231,9 @@ public class Canvas {
         drawLine(from.x, from.y, to.x, to.y);
     }
 
-    public void roundingRect(float posX, float posY, float width, float height, float rounding) {
-        nvgRoundedRect(context, posX, posY, width, height, rounding);
-    }
-
     public void drawRoundingRect(float posX, float posY, float width, float height, float rounding) {
         beginPath();
-        roundingRect(posX, posY, width, height, rounding);
+        nvgRoundedRect(context, posX, posY, width, height, rounding);
         fill();
     }
 
@@ -254,8 +249,8 @@ public class Canvas {
         MemoryUtil.memFree(sansFont);
         MemoryUtil.memFree(sansBoldFont);
         MemoryUtil.memFree(iconFont);
-        sansFont     = null;
+        sansFont = null;
         sansBoldFont = null;
-        iconFont     = null;
+        iconFont = null;
     }
 }

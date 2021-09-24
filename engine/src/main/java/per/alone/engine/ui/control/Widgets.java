@@ -9,17 +9,19 @@ import per.alone.engine.geometry.BoundingBox;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
 import per.alone.event.*;
+import per.alone.stage.Window;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * @author Administrator
+ *
+ ** @author fukrobin
  */
 @Getter
 @Setter
-public abstract class BaseControl implements EventTarget {
+public abstract class Widgets implements EventTarget {
     protected static final NVGColor RESULT = NVGColor.create();
 
     /**
@@ -38,24 +40,24 @@ public abstract class BaseControl implements EventTarget {
     protected Parent parent;
 
     /**
-     * 可见性，只有可见的 {@link BaseControl} 才能被渲染
+     * 可见性，只有可见的 {@link Widgets} 才能被渲染
      */
     protected boolean visible;
 
     private Map<EventType<? extends Event>, CompositeEventHandler<? extends Event>> eventHandlerMap;
 
-    protected BaseControl() {
+    protected Widgets() {
         this.position = new Vector2f();
-        this.size     = new Vector2f();
-        this.visible  = true;
-        this.parent   = null;
+        this.size = new Vector2f();
+        this.visible = true;
+        this.parent = null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Event> CompositeEventHandler<T> buildEventHandlerChain(T event) {
-        CompositeEventHandler<T> temp = new CompositeEventHandler<T>();
-        BaseControl cur = this;
+        CompositeEventHandler<T> temp = new CompositeEventHandler<>();
+        Widgets cur = this;
         do {
             Set<EventHandler<? super T>> handlerSet =
                     (Set<EventHandler<? super T>>) cur.eventHandlerMap.get(event.getEventType())
@@ -156,6 +158,10 @@ public abstract class BaseControl implements EventTarget {
         return getJsonObject().toString();
     }
 
+    public final void render(Window window, Canvas canvas) {
+
+    }
+
     /**
      * 此控件的绘图方法，因为Gui库的实现并不是直接操作OpenGL，需要一些外部依赖，
      * 因此每个控件都需要实现自己的绘图方法
@@ -173,9 +179,9 @@ public abstract class BaseControl implements EventTarget {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BaseControl control = (BaseControl) o;
+        Widgets control = (Widgets) o;
         return position.equals(control.position) &&
-               size.equals(control.size);
+                size.equals(control.size);
     }
 
     @Override

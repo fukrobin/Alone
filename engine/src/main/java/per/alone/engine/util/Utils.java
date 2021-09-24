@@ -45,7 +45,6 @@ import static org.lwjgl.system.MemoryUtil.*;
  *
  * @author fkobin
  * @date 2020/4/4 19:49
- * @Description
  **/
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger("Util");
@@ -65,7 +64,7 @@ public class Utils {
 
     private static final LinkedList<ByteBuffer> BUFFERS = new LinkedList<>();
 
-    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^#[0-9a-f]{6}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^#[0-9a-f]{6,8}$", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern HEX_STRING_PATTERN = Pattern.compile("^[0-9a-f]+", Pattern.CASE_INSENSITIVE);
 

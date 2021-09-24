@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Administrator
  * @date 20/5/18/09点58分
  */
-public class Parent extends Region {
+public class Parent extends Widgets {
     @SuppressWarnings("SpellCheckingInspection")
     private static final String[] CONTROLS_PACKAGE = {"pers.crobin.per.fkrobin.engine.ui.control.",
             "pers.crobin.per.fkrobin.engine.ui.text."};
@@ -19,30 +19,30 @@ public class Parent extends Region {
     /**
      * 子控件链表
      */
-    private final List<BaseControl> children;
+    private final List<Widgets> children;
 
     public Parent() {
         super();
         children = new LinkedList<>();
     }
 
-    public void addChild(BaseControl control) {
+    public void addChild(Widgets control) {
         Objects.requireNonNull(control);
         control.setParent(this);
         children.add(control);
     }
 
-    public void addChildren(BaseControl... controls) {
-        for (BaseControl control : controls) {
+    public void addChildren(Widgets... controls) {
+        for (Widgets control : controls) {
             addChild(control);
         }
     }
 
-    public List<BaseControl> getChildren() {
+    public List<Widgets> getChildren() {
         return children;
     }
 
-    public boolean remove(BaseControl control) {
+    public boolean remove(Widgets control) {
         return children.remove(control);
     }
 
@@ -108,7 +108,7 @@ public class Parent extends Region {
                         JsonArray controlArray = entry.getValue().getAsJsonArray();
                         controlArray.forEach(controlElement -> {
                             try {
-                                BaseControl controlObject = (BaseControl) clazz.newInstance();
+                                Widgets controlObject = (Widgets) clazz.newInstance();
                                 controlObject.setupFromJson(controlElement.getAsJsonObject());
                                 controlObject.setParent(this);
                                 this.children.add(controlObject);

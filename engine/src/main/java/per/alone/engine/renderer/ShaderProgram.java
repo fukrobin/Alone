@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
 /**
  * @author CRobin
  */
-public class ShaderProgram implements IMemoryManager {
+public class ShaderProgram {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShaderProgram.class);
 
     private final Map<String, Integer> uniforms;
@@ -128,7 +128,6 @@ public class ShaderProgram implements IMemoryManager {
         glUseProgram(0);
     }
 
-    @Override
     public void cleanup() {
         unbind();
         glDeleteShader(vertexShaderId);

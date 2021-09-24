@@ -138,8 +138,8 @@ public enum KeyCode {
     private static final Map<Integer, KeyCode> codeMap;
 
     static {
-        nameMap = new HashMap<String, KeyCode>(KeyCode.values().length);
-        codeMap = new HashMap<Integer, KeyCode>(KeyCode.values().length);
+        nameMap = new HashMap<>(KeyCode.values().length);
+        codeMap = new HashMap<>(KeyCode.values().length);
         for (KeyCode c : KeyCode.values()) {
             nameMap.put(c.name, c);
             codeMap.put(c.code, c);

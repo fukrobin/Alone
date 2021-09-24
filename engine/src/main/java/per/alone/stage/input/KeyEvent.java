@@ -15,25 +15,25 @@ public class KeyEvent extends Event {
      * Common supertype for all key per.fkrobin.per.fkrobin.event types.
      */
     public static final EventType<KeyEvent> ANY =
-            new EventType<KeyEvent>(Event.ANY, "KEY");
+            new EventType<>(Event.ANY, "KEY");
 
     /**
      * This per.fkrobin.per.fkrobin.event occurs when a key has been pressed.
      */
     public static final EventType<KeyEvent> KEY_PRESSED =
-            new EventType<KeyEvent>(KeyEvent.ANY, "KEY_PRESSED");
+            new EventType<>(KeyEvent.ANY, "KEY_PRESSED");
 
     /**
      * This per.fkrobin.per.fkrobin.event occurs when a key has been released.
      */
     public static final EventType<KeyEvent> KEY_RELEASED =
-            new EventType<KeyEvent>(KeyEvent.ANY, "KEY_RELEASED");
+            new EventType<>(KeyEvent.ANY, "KEY_RELEASED");
 
     /**
      * This per.fkrobin.per.fkrobin.event occurs when a key has been repeated.
      */
     public static final EventType<KeyEvent> KEY_REPEAT   =
-            new EventType<KeyEvent>(KeyEvent.ANY, "KEY_REPEAT");
+            new EventType<>(KeyEvent.ANY, "KEY_REPEAT");
 
     private final KeyCode code;
 
