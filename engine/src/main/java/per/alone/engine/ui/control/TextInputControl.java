@@ -3,7 +3,6 @@ package per.alone.engine.ui.control;
 import lombok.Getter;
 import lombok.Setter;
 import per.alone.engine.ui.text.Font;
-import per.alone.engine.util.Utils;
 
 /**
  * @author 22136
@@ -19,7 +18,7 @@ public class TextInputControl {
     /**
      * 此{@link TextInputControl}中用于文本的默认字体。
      */
-    protected final Font font;
+    protected Font font;
 
     /**
      * 插入符号在文本中的当前位置
@@ -41,7 +40,6 @@ public class TextInputControl {
         promptText    = null;
         edit          = true;
         text          = new StringBuilder();
-        font          = new Font(14, "sans", Utils.hexColorToRgba("#000000"));
     }
 
     public int getLength() {
@@ -50,6 +48,11 @@ public class TextInputControl {
 
     public String getText() {
         return text.toString();
+    }
+
+    public TextInputControl setText(String text) {
+        this.text.replace(0, this.text.length(), text);
+        return this;
     }
 
     public String getText(int start, int end) {
@@ -62,11 +65,6 @@ public class TextInputControl {
         }
 
         return this.text.substring(start, end);
-    }
-
-    public TextInputControl setText(String text) {
-        this.text.replace(0, this.text.length(), text);
-        return this;
     }
 
     public void clear() {

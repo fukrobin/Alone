@@ -1,6 +1,5 @@
 package per.alone.engine.ui.control;
 
-import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector2f;
@@ -8,16 +7,15 @@ import org.lwjgl.nanovg.NVGColor;
 import per.alone.engine.geometry.BoundingBox;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.SimpleScene;
 import per.alone.event.*;
-import per.alone.stage.Window;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- *
- ** @author fukrobin
+ * * @author fukrobin
  */
 @Getter
 @Setter
@@ -34,6 +32,8 @@ public abstract class Widgets implements EventTarget {
      */
     protected final Vector2f size;
 
+    protected SimpleScene scene;
+
     /**
      * 此控件的父控件
      */
@@ -48,9 +48,9 @@ public abstract class Widgets implements EventTarget {
 
     protected Widgets() {
         this.position = new Vector2f();
-        this.size = new Vector2f();
-        this.visible = true;
-        this.parent = null;
+        this.size     = new Vector2f();
+        this.visible  = true;
+        this.parent   = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -59,9 +59,9 @@ public abstract class Widgets implements EventTarget {
         CompositeEventHandler<T> temp = new CompositeEventHandler<>();
         Widgets cur = this;
         do {
-            Set<EventHandler<? super T>> handlerSet =
-                    (Set<EventHandler<? super T>>) cur.eventHandlerMap.get(event.getEventType())
-                                                                      .getEventHandlers();
+            CompositeEventHandler<T> compositeEventHandler = (CompositeEventHandler<T>) cur.eventHandlerMap.get(
+                    event.getEventType());
+            Set<EventHandler<? super T>> handlerSet = compositeEventHandler.getEventHandlers();
             for (EventHandler<? super T> handler : handlerSet) {
                 temp.addEventHandler(handler);
             }
@@ -88,6 +88,16 @@ public abstract class Widgets implements EventTarget {
             CompositeEventHandler<T> handler = (CompositeEventHandler<T>) eventHandlerMap.get(eventType);
             handler.removeEventHandler(eventHandler);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final <T extends Event> void setEventHandler(
+            final EventType<T> eventType,
+            final EventHandler<? super T> eventHandler) {
+        CompositeEventHandler<T> compositeEventHandler =
+                (CompositeEventHandler<T>) eventHandlerMap.computeIfAbsent(eventType,
+                                                                           eventType1 -> new CompositeEventHandler<>());
+        compositeEventHandler.setEventHandler(eventHandler);
     }
 
     //////////////////////////
@@ -121,45 +131,27 @@ public abstract class Widgets implements EventTarget {
         return new BoundingBox(parent.position.x + position.x, parent.position.y + position.y, size.x, size.y);
     }
 
-    ///////////////////////////////
-    /// Json
-    ///////////////////////////////
-
-    /**
-     * 获取此<code>Control</code>的Json描述对象
-     */
-    protected JsonObject getJsonObject() {
-        JsonObject object = new JsonObject();
-        object.addProperty("layout-x", position.x);
-        object.addProperty("layout-y", position.y);
-
-        return object;
-    }
-
-    /**
-     * @param object Json对象，包含了描述此控件属性的信息。
-     * @throws IllegalArgumentException 如果参数为<code>null</code>或JsonObject内容为空
-     */
-    public void setupFromJson(JsonObject object) {
-        if (object == null || object.isJsonNull()) {
-            throw new IllegalArgumentException("Illegal json data.");
+    public float getXInScene() {
+        float x = position.x;
+        if (parent != null) {
+            x += parent.getXInScene();
         }
-
-        this.position.x = object.get("layout-x").getAsFloat();
-        this.position.y = object.get("layout-y").getAsFloat();
+        return x;
     }
 
-    /**
-     * 将此控件的详细信息作为Json格式的字符串返回
-     *
-     * @return Json字符串
-     */
-    protected String toJsonString() {
-        return getJsonObject().toString();
+    public float getYInScene() {
+        float y = position.y;
+        if (parent != null) {
+            y += parent.getYInScene();
+        }
+        return y;
     }
 
-    public final void render(Window window, Canvas canvas) {
+    public final void render(Canvas canvas) {
+        // 平移坐标系，以适应 scene 在 window 中的偏移
+        canvas.translate(scene.getX() + getXInScene(), scene.getY() + getYInScene());
 
+        draw(canvas);
     }
 
     /**
@@ -169,7 +161,7 @@ public abstract class Widgets implements EventTarget {
      * @param offsetX 此控件在窗口中的X轴上的偏移值，通常等于<code>Gui</code>的position.x
      * @param offsetY 此控件在窗口中的Y轴上的偏移值，通常等于<code>Gui</code>的position.y
      */
-    protected abstract void draw(float offsetX, float offsetY, Canvas canvas);
+    protected abstract void draw(Canvas canvas);
 
     @Override
     public boolean equals(Object o) {
@@ -181,7 +173,7 @@ public abstract class Widgets implements EventTarget {
         }
         Widgets control = (Widgets) o;
         return position.equals(control.position) &&
-                size.equals(control.size);
+               size.equals(control.size);
     }
 
     @Override

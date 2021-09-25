@@ -88,8 +88,8 @@ public class Agent {
 
     public void reset(Camera camera) {
         cameraPosition.set(camera.getPosition());
-        projectViewMtx.set(camera.getProjectionMtx());
-        projectViewMtx.mul(camera.getViewMtx());
+        projectViewMtx.set(camera.getProjectionMatrix());
+        projectViewMtx.mul(camera.getViewMatrix());
         frustumIntersection.set(projectViewMtx, false);
     }
 

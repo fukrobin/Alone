@@ -29,7 +29,7 @@ public class SceneRenderer implements RendererComponent {
 
     private final Agent agent;
 
-    private final Scene scene;
+    private final VoxelScene voxelScene;
 
     /**
      * 使用帧缓冲渲染时，渲染到屏幕需要使用的着色器
@@ -61,12 +61,12 @@ public class SceneRenderer implements RendererComponent {
     private int preWidth, preHeight;
 
     public SceneRenderer() {
-        agent = new Agent();
-        scene = new Scene();
+        agent      = new Agent();
+        voxelScene = new VoxelScene();
     }
 
-    public Scene getScene() {
-        return scene;
+    public VoxelScene getScene() {
+        return voxelScene;
     }
 
     public void initialize() {
@@ -153,10 +153,10 @@ public class SceneRenderer implements RendererComponent {
     /**
      * 渲染天空盒
      *
-     * @param scene 渲染的场景
+     * @param voxelScene 渲染的场景
      */
-    private void renderSkyBox(Scene scene) {
-        SkyBox skyBox = scene.getSkyBox();
+    private void renderSkyBox(VoxelScene voxelScene) {
+        SkyBox skyBox = voxelScene.getSkyBox();
         if (skyBox != null) {
             glDepthFunc(GL_LEQUAL);
             skyBoxShaderProgram.bind();
@@ -177,10 +177,10 @@ public class SceneRenderer implements RendererComponent {
     /**
      * 渲染所有可见体素。此方法会默认尽最大努力进行视锥剔除。
      *
-     * @param scene 需要进行渲染的场景
+     * @param voxelScene 需要进行渲染的场景
      */
-    private void renderVoxel(Scene scene, DebugInfo debugInfo) {
-        agent.reset(scene.getCamera());
+    private void renderVoxel(VoxelScene voxelScene, DebugInfo debugInfo) {
+        agent.reset(voxelScene.getCamera());
 
         int instancedBuffer = instancedMesh.getInstancedBuffer();
         glBindBuffer(GL_ARRAY_BUFFER, instancedBuffer);
@@ -188,7 +188,7 @@ public class SceneRenderer implements RendererComponent {
         voxelShaderProgram.bind();
         voxelShaderProgram.setUniform("Texture", 0);
         int count = 0;
-        for (Chunk chunk : scene.getChunkList()) {
+        for (Chunk chunk : voxelScene.getChunkList()) {
             if (agent.testChunk(chunk)) {
                 for (int i = 0; i < Chunk.ROOT_COUNT; i++) {
                     if (agent.filterVoxel(chunk, i)) {
@@ -212,12 +212,12 @@ public class SceneRenderer implements RendererComponent {
         voxelShaderProgram.unbind();
     }
 
-    private void renderModel(Scene scene) {
+    private void renderModel(VoxelScene voxelScene) {
         TEMP.identity().translate(0, 0, -5);
         modelShaderProgram.bind();
         modelShaderProgram.setUniform("modelMtx", TEMP);
         modelShaderProgram.setUniform("modelTexture", 0);
-        scene.getModels().forEach(Model::draw);
+        voxelScene.getModels().forEach(Model::draw);
         modelShaderProgram.unbind();
     }
 
@@ -274,7 +274,7 @@ public class SceneRenderer implements RendererComponent {
         this.window = window;
         beforeRender();
 
-        Camera camera = scene.getCamera();
+        Camera camera = voxelScene.getCamera();
         if (window.isDebugMode()) {
             GlobalVariable.ENGINE_DEBUG_INFO.push(
                     String.format("Position: [x: %.3f, y: %.3f, z: %.3f]", camera.getPosition().x,
@@ -287,13 +287,13 @@ public class SceneRenderer implements RendererComponent {
         setupProjectAndView(camera);
 
         // 渲染所有体素
-        renderVoxel(scene, engineContext.getDebugInfo());
+        renderVoxel(voxelScene, engineContext.getDebugInfo());
 
         // 渲染所有模型
-        renderModel(scene);
+        renderModel(voxelScene);
 
         // 渲染当前的天空盒
-        renderSkyBox(scene);
+        renderSkyBox(voxelScene);
         endRender();
     }
 
@@ -309,7 +309,7 @@ public class SceneRenderer implements RendererComponent {
         glDeleteFramebuffers(frameBuffer);
         glDeleteRenderbuffers(renderBuffer);
 
-        scene.cleanUp();
+        voxelScene.cleanUp();
         agent.cleanup();
     }
 }

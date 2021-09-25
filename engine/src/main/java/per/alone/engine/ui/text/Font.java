@@ -2,7 +2,7 @@ package per.alone.engine.ui.text;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.joml.Vector4i;
+import per.alone.engine.ui.Color;
 
 /**
  * @author Administrator
@@ -12,21 +12,21 @@ import org.joml.Vector4i;
 public class Font {
     public static final int MIN_FONT_SIZE = 5;
 
-    protected final Vector4i color;
+    protected Color color;
 
     protected int fontSize;
 
     protected String fontFace;
 
     public Font() {
-        this(14, "sans", new Vector4i(255));
+        this(14, "sans", Color.BLACK);
     }
 
     public Font(int fontSize, String fontFace) {
-        this(fontSize, fontFace, new Vector4i(255));
+        this(fontSize, fontFace, Color.BLACK);
     }
 
-    public Font(int fontSize, String fontFace, Vector4i color) {
+    public Font(int fontSize, String fontFace, Color color) {
         this.fontSize = fontSize;
         this.fontFace = fontFace;
         this.color    = color;
@@ -36,13 +36,5 @@ public class Font {
         if (fontSize > MIN_FONT_SIZE) {
             this.fontSize = fontSize;
         }
-    }
-
-    public void setColor(Vector4i color) {
-        setColor(color.x, color.y, color.z, color.w);
-    }
-
-    public void setColor(int r, int g, int b, int a) {
-        this.color.set(r, g, b, a);
     }
 }

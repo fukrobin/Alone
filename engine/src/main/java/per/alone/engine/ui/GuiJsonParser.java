@@ -1,8 +1,5 @@
 package per.alone.engine.ui;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonObject;
 import per.alone.engine.ui.control.Parent;
 import per.alone.engine.util.Utils;
 
@@ -26,22 +23,8 @@ public class GuiJsonParser {
     }
 
     public Parent parse() {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Parent.class, (JsonDeserializer<Parent>) (json, typeOfT, context) -> {
-            JsonObject jsonObject = json.getAsJsonObject();
-            JsonObject root = jsonObject.get("RootPane").getAsJsonObject();
-            if (root != null) {
-                Parent parent = new Parent();
-
-                parent.setupFromJson(root);
-
-                return parent;
-            }
-
-            return null;
-        });
-
-        return builder.create().fromJson(jsonString, Parent.class);
+        // TODO JSON parse
+        return null;
     }
 }
 

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import per.alone.engine.context.EngineContext;
 import per.alone.engine.context.EngineContextEvent;
 import per.alone.engine.context.SmartEngineContextListener;
+import per.alone.engine.ui.GuiRenderer;
 import per.alone.engine.util.GLHelp;
 import per.alone.event.EventType;
 import per.alone.stage.Window;

@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import per.alone.engine.kernel.DebugInfo;
 import per.alone.engine.renderer.CompositeRenderer;
-import per.alone.engine.renderer.GuiRenderer;
 import per.alone.engine.renderer.SceneRenderer;
 import per.alone.engine.sound.SoundManager;
+import per.alone.engine.ui.GuiRenderer;
 import per.alone.event.EventHandlerManager;
 import per.alone.event.EventQueue;
 

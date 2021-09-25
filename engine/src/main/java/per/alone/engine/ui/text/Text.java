@@ -1,13 +1,10 @@
 package per.alone.engine.ui.text;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.system.MemoryStack;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.control.Region;
-import per.alone.engine.util.Utils;
 
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -49,72 +46,24 @@ public class Text extends Region {
     }
 
     @Override
-    public void setupFromJson(JsonObject object) {
-        super.setupFromJson(object);
-
-        // 必需的属性，不会对此类属性进行检查，这意味着此类属性只要有任何的不规范就会形成异常
-        this.text = object.get("text").getAsString();
-
-        // 非必需属性（带默认值）,此类属性如果为空或是错误，会直接跳过
-        JsonElement fontSizeElement = object.get("font-size");
-        JsonElement fontFaceElement = object.get("font-face");
-        JsonElement fontColorElement = object.get("font-color");
-        JsonElement alignElement = object.get("align");
-        if (fontSizeElement != null && !fontSizeElement.isJsonNull()) {
-            this.font.fontSize = fontSizeElement.getAsInt();
-        }
-        if (fontFaceElement != null && !fontFaceElement.isJsonNull()) {
-            this.font.fontFace = fontFaceElement.getAsString();
-        }
-        if (fontColorElement != null && !fontColorElement.isJsonNull()) {
-            this.font.color.set(Utils.hexColorToRgba(fontColorElement.getAsString()));
-        }
-        if (alignElement != null && !alignElement.isJsonNull()) {
-            this.align = TextAlignment.valueOf(alignElement.getAsString());
-        }
-    }
-
-    @Override
-    public void draw(float offsetX, float offsetY, Canvas canvas) {
+    public void draw(Canvas canvas) {
         if (this.text != null) {
             canvas.setFont(font);
             canvas.textAlign(align);
 
-            float x = position.x + offsetX;
-            float y = position.y + offsetY;
             if (wrappingWidth != 0) {
-                canvas.textBox(x, y, wrappingWidth, text);
+                canvas.textBox(position.x, position.y, wrappingWidth, text);
                 try (MemoryStack stack = MemoryStack.stackPush()) {
                     // 测量Text的文本区域边界
                     FloatBuffer boundBuffer = stack.mallocFloat(4);
-                    canvas.textBoxBounds(x, y, wrappingWidth, text, boundBuffer);
+                    canvas.textBoxBounds(position.x, position.y, wrappingWidth, text, boundBuffer);
                     size.x = boundBuffer.get(2) - boundBuffer.get(0);
                     size.y = boundBuffer.get(3) - boundBuffer.get(1);
                 }
             } else {
-                canvas.drawText(text, x, y);
+                canvas.drawText(text, position.x, position.y);
             }
         }
-    }
-
-    @Override
-    public String toJsonString() {
-        return getJsonObject().toString();
-    }
-
-    @Override
-    public JsonObject getJsonObject() {
-        JsonObject textObject = new JsonObject();
-
-        textObject.addProperty("text", text);
-        textObject.addProperty("layout-x", position.x);
-        textObject.addProperty("layout-y", position.y);
-        textObject.addProperty("font-size", font.fontSize);
-        textObject.addProperty("font-face", font.fontFace);
-        textObject.addProperty("font-color", Utils.rgbToHexColorString(font.getColor()));
-        textObject.addProperty("align", align.toString());
-
-        return textObject;
     }
 
     @Override

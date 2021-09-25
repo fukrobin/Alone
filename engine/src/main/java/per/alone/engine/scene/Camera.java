@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import per.alone.stage.Window;
 
 import java.nio.FloatBuffer;
 
@@ -13,50 +14,88 @@ import java.nio.FloatBuffer;
  * @author fkobin
  * @date 2020/4/5 01:19
  **/
-public class Camera {
-    private final FloatBuffer viewMtxBuffer       = BufferUtils.createFloatBuffer(16);
+public abstract class Camera {
+    protected final Vector2f rotation;
 
-    private final FloatBuffer projectionMtxBuffer = BufferUtils.createFloatBuffer(16);
+    protected final Vector3f position;
 
-    private final Vector2f rotation;
+    protected final Matrix4f viewMatrix;
+
+    protected final Matrix4f projectionMatrix;
+
+    private final FloatBuffer viewMtxBuffer;
+
+    private final FloatBuffer projectionMtxBuffer;
 
     private final Vector3f target;
 
     private final Vector3f up;
 
-    private final Vector3f position;
-
-    private final Matrix4f viewMtx;
-
-    private final Matrix4f projectionMtx;
-
     /**
      * 视锥体的视野范围大小,默认值为60.0f
      */
-    private       float    fovy = 60.0f;
+    private final float fovy = 60.0f;
+
+    private float viewWidth = 1.0f;
+
+    private float viewHeight = 1.0f;
+
+    /**
+     * 指定近裁剪面的距离
+     */
+    private float nearClip = 0.0f;
+
+    /**
+     * 指定远裁剪平面的距离
+     */
+    private float farClip = -1.0f;
+
+    private Window window; // TODO inject
+
 
     public Camera() {
         position = new Vector3f();
         target   = new Vector3f(0.0f, 0.0f, -1.0f);
         up       = new Vector3f(0.0f, 1.0f, 0.0f);
 
-        rotation      = new Vector2f();
-        viewMtx       = new Matrix4f();
-        projectionMtx = new Matrix4f();
-        setProjection();
+        rotation         = new Vector2f();
+        viewMatrix       = new Matrix4f();
+        projectionMatrix = new Matrix4f();
+
+        viewMtxBuffer       = BufferUtils.createFloatBuffer(16);
+        projectionMtxBuffer = BufferUtils.createFloatBuffer(16);
     }
 
-    public void setFovy(float fovy) {
-        this.fovy = fovy;
-        setProjection();
+    public float getViewWidth() {
+        return viewWidth;
     }
 
-    private void setProjection() {
-        projectionMtx.setPerspective(toRadians(), EngineThread.getThreadWindow().aspect(), 0.01f, 100.0f);
+    public void setViewWidth(float viewWidth) {
+        this.viewWidth = viewWidth;
     }
 
-    private float toRadians() {
-        return (float) Math.toRadians(fovy);
+    public float getViewHeight() {
+        return viewHeight;
+    }
+
+    public void setViewHeight(float viewHeight) {
+        this.viewHeight = viewHeight;
+    }
+
+    public final float getNearClip() {
+        return nearClip <= 0.0 ? 0.1f : nearClip;
+    }
+
+    public final void setNearClip(float value) {
+        nearClip = value;
+    }
+
+    public final float getFarClip() {
+        return farClip <= 0 ? 100.0f : farClip;
+    }
+
+    public final void setFarClip(float value) {
+        farClip = value;
     }
 
     public void setCameraPos(float x, float y, float z) {
@@ -95,23 +134,41 @@ public class Camera {
         rotation.y += yawOffset;
     }
 
-    public Matrix4f getProjectionMtx() {
-        setProjection();
-        return projectionMtx;
+    public Matrix4f getProjectionMatrix() {
+        return projectionMatrix;
     }
 
-    public Matrix4f getViewMtx() {
-        viewMtx.rotationX((float) Math.toRadians(rotation.x)).rotateY((float) Math.toRadians(rotation.y));
-        viewMtx.translate(-position.x, -position.y, -position.z);
+    /**
+     * 计算投影矩阵
+     */
+    public abstract void computeProjectionMatrix();
 
-        return viewMtx;
+    /**
+     * 计算视图矩阵
+     */
+    public abstract void computeViewMatrix();
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
     }
 
+    /**
+     * 将投影矩阵转为 float buffer，在返回之前将会调用 {@link Camera#computeProjectionMatrix}
+     *
+     * @return {@link FloatBuffer}
+     */
     public FloatBuffer getProjectionMtxBuffer() {
-        return getProjectionMtx().get(projectionMtxBuffer);
+        computeProjectionMatrix();
+        return getProjectionMatrix().get(projectionMtxBuffer);
     }
 
+    /**
+     * 将视图矩阵转为 float buffer，在返回之前将会调用 {@link Camera#computeViewMatrix}
+     *
+     * @return {@link FloatBuffer}
+     */
     public FloatBuffer getViewMtxBuffer() {
-        return getViewMtx().get(viewMtxBuffer);
+        computeViewMatrix();
+        return getViewMatrix().get(viewMtxBuffer);
     }
 }

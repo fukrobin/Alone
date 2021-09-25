@@ -1,17 +1,12 @@
 package per.alone.engine.ui.control;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializer;
 import lombok.Getter;
 import org.joml.Vector2f;
-import per.alone.engine.event.ActionEvent;
-import per.alone.engine.event.EventHandler;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.text.Text;
 import per.alone.engine.ui.text.TextAlignment;
-import per.alone.stage.input.MouseEvent;
+import per.alone.event.EventHandler;
+import per.alone.stage.input.ActionEvent;
 
 /**
  * @author Administrator
@@ -21,13 +16,6 @@ public class Button extends Region {
     public static final Vector2f MIN_SIZE = new Vector2f(50f, 20f);
 
     private final Text textControl;
-
-    /**
-     * <code>onAction、mouseClicked、mouseRelease</code>实际上是同时触发的相同事件，可以酌情注册它们
-     */
-    protected EventHandler<ActionEvent> onAction;
-
-    protected EventHandler<MouseEvent> onHover;
 
     public Button() {
         super();
@@ -71,34 +59,12 @@ public class Button extends Region {
         textControl.setText(text);
     }
 
-    @Override
-    public String toJsonString() {
-        return new GsonBuilder().registerTypeAdapter(Button.class,
-                                                     (JsonSerializer<Button>) (src, typeOfSrc, context) ->
-                                                             src.getJsonObject())
-                                .create()
-                                .toJson(this);
-    }
-
-    @Override
-    public JsonObject getJsonObject() {
-        JsonObject buttonObject = super.getJsonObject();
-
-        buttonObject.add("text-control", textControl.getJsonObject());
-
-        return buttonObject;
-    }
-
-    @Override
-    public void setupFromJson(JsonObject object) {
-        super.setupFromJson(object);
-
-        // 必须有text-control属性
-        JsonElement textControlElement = object.get("text-control");
-        if (textControlElement != null && !textControlElement.isJsonNull()) {
-            this.textControl.setupFromJson(textControlElement.getAsJsonObject());
-        } else {
-            throw new IllegalArgumentException("The button control must have a text-control and cannot be null.");
-        }
+    /**
+     * Button 被触发时将会调用，如：鼠标点击、键盘按键
+     *
+     * @param handler 处理程序
+     */
+    public void setOnAction(EventHandler<ActionEvent> handler) {
+        setEventHandler(ActionEvent.ACTION, handler);
     }
 }

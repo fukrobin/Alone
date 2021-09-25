@@ -1,7 +1,5 @@
 package per.alone.engine.ui.control;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import lombok.Getter;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
@@ -21,7 +19,7 @@ import java.util.Objects;
 public class Icon extends Widgets {
     private static final Map<Integer, ByteBuffer> CODE_POINT_ICON = new HashMap<>(16);
 
-    protected final Font font;
+    protected Font font;
 
     protected int codePoint;
 
@@ -35,7 +33,6 @@ public class Icon extends Widgets {
      */
     Icon() {
         super();
-        font = new Font(14, "icons", Utils.hexColorToRgba("#ABD8ED"));
     }
 
     public Icon(int codePoint) {
@@ -46,7 +43,6 @@ public class Icon extends Widgets {
         } else {
             throw new IllegalArgumentException("The code point of the icon can only be between 0xf000 and 0xf2e0");
         }
-        font = new Font(14, "icons", Utils.hexColorToRgba("#ABD8ED"));
     }
 
     public void setCodePoint(int codePoint) {
@@ -63,46 +59,10 @@ public class Icon extends Widgets {
     }
 
     @Override
-    public void draw(float offsetX, float offsetY, Canvas canvas) {
+    public void draw(Canvas canvas) {
         if (iconBuffer != null) {
             canvas.setFont(font, TextAlignment.TOP_LEFT);
-            canvas.drawText(iconBuffer, position.x + offsetX, position.y + offsetY);
-        }
-    }
-
-    @Override
-    protected JsonObject getJsonObject() {
-        JsonObject iconTextObject = new JsonObject();
-
-        iconTextObject.addProperty("icon", Integer.toHexString(codePoint));
-        iconTextObject.addProperty("icon-size", font.getFontSize());
-        iconTextObject.addProperty("icon-color", Utils.rgbToHexColorString(font.getColor()));
-        iconTextObject.addProperty("layout-x", position.x);
-        iconTextObject.addProperty("layout-y", position.y);
-
-        return iconTextObject;
-    }
-
-    @Override
-    protected String toJsonString() {
-        return getJsonObject().toString();
-    }
-
-
-    @Override
-    public void setupFromJson(JsonObject object) {
-        super.setupFromJson(object);
-
-        this.setCodePoint(Integer.parseUnsignedInt(object.get("icon").getAsString(), 16));
-        JsonElement iconSizeElement = object.get("icon-size");
-        JsonElement iconColorElement = object.get("icon-color");
-
-        if (iconSizeElement != null && !iconSizeElement.isJsonNull()) {
-            this.font.setFontSize(iconSizeElement.getAsInt());
-        }
-
-        if (iconColorElement != null && !iconColorElement.isJsonNull()) {
-            this.font.setColor(Utils.hexColorToRgba(iconColorElement.getAsString()));
+            canvas.drawText(iconBuffer, position.x, position.y);
         }
     }
 

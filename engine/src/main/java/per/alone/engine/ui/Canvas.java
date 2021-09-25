@@ -2,8 +2,6 @@ package per.alone.engine.ui;
 
 import lombok.extern.slf4j.Slf4j;
 import org.joml.Vector2f;
-import org.joml.Vector4i;
-import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGTextRow;
 import org.lwjgl.nanovg.NanoVGGL3;
 import org.lwjgl.system.MemoryUtil;
@@ -25,9 +23,6 @@ import static org.lwjgl.nanovg.NanoVG.*;
  */
 @Slf4j
 public class Canvas {
-
-    private static final NVGColor TEMP = NVGColor.create();
-
     private ByteBuffer sansFont;
 
     private ByteBuffer sansBoldFont;
@@ -36,9 +31,9 @@ public class Canvas {
 
     private long context = -1;
 
-    private int offsetX;
+    private final int offsetX;
 
-    private int offsetY;
+    private final int offsetY;
 
     public Canvas() {
         try {
@@ -57,9 +52,9 @@ public class Canvas {
     }
 
     private void loadFont() throws IOException {
-        sansFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
+        sansFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
         sansBoldFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Dengb.ttf");
-        iconFont = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
+        iconFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
     }
 
     private long createNvgContext() {
@@ -108,7 +103,7 @@ public class Canvas {
         nvgFontSize(context, fontSize);
     }
 
-    public void textColor(Vector4i color) {
+    public void textColor(Color color) {
         fillColor(color);
     }
 
@@ -237,6 +232,10 @@ public class Canvas {
         fill();
     }
 
+    public void translate(float x, float y) {
+        nvgTranslate(context, x, y);
+    }
+
     public void cleanup() {
         cleanFont();
         if (context != -1 && context != MemoryUtil.NULL) {
@@ -249,8 +248,8 @@ public class Canvas {
         MemoryUtil.memFree(sansFont);
         MemoryUtil.memFree(sansBoldFont);
         MemoryUtil.memFree(iconFont);
-        sansFont = null;
+        sansFont     = null;
         sansBoldFont = null;
-        iconFont = null;
+        iconFont     = null;
     }
 }

@@ -231,10 +231,9 @@ public class Utils {
         return data;
     }
 
+    // TODO: 2021/9/25 判断鼠标位置是否在某个区域（Widgets）
     public static boolean isHover(float x, float y, float width, float height, MouseEvent event) {
-        double cx = event.getCursorPosX();
-        double cy = event.getCursorPosY();
-        return (cx >= x && cx <= x + width) && (cy >= y && cy <= y + height);
+        return false;
     }
 
     public static boolean isHover(Vector2f position, Vector2f size, MouseEvent event) {
@@ -242,7 +241,7 @@ public class Utils {
     }
 
     public static boolean isHover(Bounds controlBounds, MouseEvent event) {
-        return controlBounds.contains(event.getCursorPosX(), event.getCursorPosY());
+        return false;
     }
 
     public static NVGColor rgba(int r, int g, int b, int a, NVGColor result) {

@@ -1,6 +1,5 @@
 package per.alone.engine.ui.control;
 
-import com.google.gson.*;
 import per.alone.engine.ui.Canvas;
 
 import java.util.LinkedList;
@@ -29,6 +28,7 @@ public class Parent extends Widgets {
     public void addChild(Widgets control) {
         Objects.requireNonNull(control);
         control.setParent(this);
+        control.setScene(getScene());
         children.add(control);
     }
 
@@ -47,80 +47,7 @@ public class Parent extends Widgets {
     }
 
     @Override
-    public void draw(float offsetX, float offsetY, Canvas canvas) {
-        super.draw(offsetX, offsetY, canvas);
-        children.forEach(control -> control.draw(offsetX + this.position.x,
-                                                 offsetY + this.position.y,
-                                                 canvas));
-    }
-
-    @Override
-    public String toJsonString() {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Parent.class, (JsonSerializer<Parent>) (src, typeOfSrc, context) -> {
-            JsonObject root = new JsonObject();
-
-            JsonObject parentObject = super.getJsonObject();
-            if (!children.isEmpty()) {
-                JsonObject childrenObject = new JsonObject();
-
-                children.forEach(control -> {
-                    JsonElement controlElement = childrenObject.get(control.getClass().getSimpleName());
-                    JsonArray controlArray;
-                    if (controlElement == null) {
-                        childrenObject.add(control.getClass().getSimpleName(), controlArray = new JsonArray());
-                    } else {
-                        controlArray = controlElement.getAsJsonArray();
-                    }
-                    controlArray.add(control.getJsonObject());
-                });
-
-                parentObject.add("children", childrenObject);
-            }
-
-            root.add("RootPane", parentObject);
-
-            return root;
-        });
-        return builder.create().toJson(this);
-    }
-
-    @Override
-    public void setupFromJson(JsonObject object) {
-        super.setupFromJson(object);
-
-        JsonElement childrenElement = object.get("children");
-        if (childrenElement != null && !childrenElement.isJsonNull()) {
-            JsonObject childrenObject = childrenElement.getAsJsonObject();
-
-            childrenObject.entrySet().forEach(entry -> {
-                if (!entry.getValue().isJsonNull()) {
-
-                    final Class<?> clazz;
-                    try {
-                        String key = entry.getKey();
-                        // 判断是否是textb包下的控件，并根据结果添加包路径字符串
-                        if ("Text".equals(key) || "Font".equals(key)) {
-                            clazz = Class.forName(CONTROLS_PACKAGE[1] + key);
-                        } else {
-                            clazz = Class.forName(CONTROLS_PACKAGE[0] + key);
-                        }
-                        JsonArray controlArray = entry.getValue().getAsJsonArray();
-                        controlArray.forEach(controlElement -> {
-                            try {
-                                Widgets controlObject = (Widgets) clazz.newInstance();
-                                controlObject.setupFromJson(controlElement.getAsJsonObject());
-                                controlObject.setParent(this);
-                                this.children.add(controlObject);
-                            } catch (InstantiationException | IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException("Class [" + entry.getKey() + "] not found.", e);
-                    }
-                }
-            });
-        }
+    public void draw(Canvas canvas) {
+        children.forEach(control -> control.draw(canvas));
     }
 }

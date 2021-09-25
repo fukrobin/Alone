@@ -1,6 +1,5 @@
 package per.alone.event;
 
-import lombok.extern.slf4j.Slf4j;
 import per.alone.common.exception.MultiException;
 
 import java.util.Collections;
@@ -13,12 +12,21 @@ import java.util.Set;
  * @author fkrobin
  * @date 2021/9/17 0:11
  */
-@Slf4j
 public class CompositeEventHandler<T extends Event> {
     private final Set<EventHandler<? super T>> eventHandlers;
 
+    private EventHandler<? super T> eventHandler;
+
     public CompositeEventHandler() {
         this.eventHandlers = new HashSet<>();
+    }
+
+    public EventHandler<? super T> getEventHandler() {
+        return eventHandler;
+    }
+
+    public void setEventHandler(final EventHandler<? super T> eventHandler) {
+        this.eventHandler = eventHandler;
     }
 
     public Set<EventHandler<? super T>> getEventHandlers() {

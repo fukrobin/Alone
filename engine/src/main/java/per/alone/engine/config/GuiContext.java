@@ -12,7 +12,7 @@ import static org.lwjgl.nanovg.NanoVG.*;
  */
 @Slf4j
 public class GuiContext {
-    private final Canvas canvas;
+    private final Cmanvas canvas;
 
     private boolean inFrame;
 
