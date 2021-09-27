@@ -3,7 +3,7 @@ package per.alone.engine.ui.control;
 import org.joml.Vector2f;
 import org.lwjgl.nanovg.NVGTextRow;
 import per.alone.engine.ui.Canvas;
-import per.alone.engine.ui.text.TextAlignment;
+import per.alone.engine.ui.text.Alignment;
 
 /**
  * @author Administrator
@@ -22,7 +22,7 @@ public class TextField extends Region {
 
     public TextField() {
         inputControl = new TextInputControl();
-        focus        = false;
+        focus = false;
     }
 
     public boolean isFocus() {
@@ -39,7 +39,7 @@ public class TextField extends Region {
         float x = position.x + 2;
         float y = position.y;
 
-        canvas.setFont(inputControl.font, TextAlignment.CENTER_LEFT);
+        canvas.setFont(inputControl.font, Alignment.CENTER_LEFT);
         canvas.drawText(inputControl.text, new Vector2f(x, y + size.y * 0.5f));
         if (focus) {
             // 绘制光标

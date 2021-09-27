@@ -6,7 +6,7 @@ import org.lwjgl.nanovg.NanoVG;
  * @author Administrator
  */
 
-public enum TextAlignment {
+public enum Alignment {
     /**
      * 左上角对齐
      */
@@ -50,7 +50,7 @@ public enum TextAlignment {
 
     private final int align;
 
-    TextAlignment(int align) {
+    Alignment(int align) {
         this.align = align;
     }
 

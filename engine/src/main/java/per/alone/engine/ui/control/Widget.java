@@ -8,6 +8,7 @@ import per.alone.engine.geometry.BoundingBox;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.SimpleScene;
+import per.alone.engine.ui.behavior.WidgetBehavior;
 import per.alone.event.*;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Set;
  */
 @Getter
 @Setter
-public abstract class Widgets implements EventTarget {
+public abstract class Widget implements EventTarget {
     protected static final NVGColor RESULT = NVGColor.create();
 
     /**
@@ -37,27 +38,29 @@ public abstract class Widgets implements EventTarget {
     /**
      * 此控件的父控件
      */
-    protected Parent parent;
+    private Parent parent;
 
     /**
-     * 可见性，只有可见的 {@link Widgets} 才能被渲染
+     * 可见性，只有可见的 {@link Widget} 才能被渲染
      */
-    protected boolean visible;
+    private boolean visible;
+
+    private WidgetBehavior<? extends Widget> defaultBehavior;
 
     private Map<EventType<? extends Event>, CompositeEventHandler<? extends Event>> eventHandlerMap;
 
-    protected Widgets() {
+    protected Widget() {
         this.position = new Vector2f();
-        this.size     = new Vector2f();
-        this.visible  = true;
-        this.parent   = null;
+        this.size = new Vector2f();
+        this.visible = true;
+        this.parent = null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Event> CompositeEventHandler<T> buildEventHandlerChain(T event) {
         CompositeEventHandler<T> temp = new CompositeEventHandler<>();
-        Widgets cur = this;
+        Widget cur = this;
         do {
             CompositeEventHandler<T> compositeEventHandler = (CompositeEventHandler<T>) cur.eventHandlerMap.get(
                     event.getEventType());
@@ -136,7 +139,9 @@ public abstract class Widgets implements EventTarget {
         if (parent == null) {
             return new BoundingBox(position.x, position.y, size.x, size.y);
         }
-        return new BoundingBox(parent.position.x + position.x, parent.position.y + position.y, size.x, size.y);
+        Vector2f parentPosition = parent.getPosition();
+        return new BoundingBox(parentPosition.x + this.position.x,
+                               parentPosition.y + this.position.y, size.x, size.y);
     }
 
     public float getXInScene() {
@@ -168,6 +173,15 @@ public abstract class Widgets implements EventTarget {
      */
     protected abstract void draw(Canvas canvas);
 
+    protected abstract WidgetBehavior<?> createWidgetBehavior();
+
+    public WidgetBehavior<?> getDefaultBehavior() {
+        if (defaultBehavior == null) {
+            defaultBehavior = createWidgetBehavior();
+        }
+        return defaultBehavior;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -176,9 +190,9 @@ public abstract class Widgets implements EventTarget {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Widgets control = (Widgets) o;
+        Widget control = (Widget) o;
         return position.equals(control.position) &&
-               size.equals(control.size);
+                size.equals(control.size);
     }
 
     @Override

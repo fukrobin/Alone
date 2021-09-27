@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.lwjgl.system.MemoryStack;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.behavior.TextBehavior;
+import per.alone.engine.ui.behavior.WidgetBehavior;
+import per.alone.engine.ui.control.Parent;
 import per.alone.engine.ui.control.Region;
+import per.alone.engine.ui.control.Widget;
 
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -16,12 +20,12 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-public class Text extends Region {
-    public static final TextAlignment DEFAULT_ALIGNMENT = TextAlignment.TOP_LEFT;
+public class Text extends Widget {
+    public static final Alignment DEFAULT_ALIGNMENT = Alignment.TOP_LEFT;
 
-    protected final Font font;
+    protected Font font;
 
-    protected TextAlignment align;
+    protected Alignment align;
 
     protected String text;
 
@@ -33,16 +37,21 @@ public class Text extends Region {
 
     public Text() {
         super();
-        this.font  = new Font();
         this.align = DEFAULT_ALIGNMENT;
     }
 
     public Text(String text) {
         super();
         Objects.requireNonNull(text);
-        this.font  = new Font();
-        this.text  = text;
+        this.text = text;
         this.align = DEFAULT_ALIGNMENT;
+    }
+
+    public Font getFont() {
+        if (font == null) {
+            font = Font.getDefault();
+        }
+        return font;
     }
 
     @Override
@@ -66,6 +75,12 @@ public class Text extends Region {
         }
     }
 
+
+    @Override
+    protected TextBehavior<? extends Text> createWidgetBehavior() {
+        return new TextBehavior<>(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -79,7 +94,7 @@ public class Text extends Region {
         }
         Text text1 = (Text) o;
         return font.equals(text1.font) &&
-               text.equals(text1.text);
+                text.equals(text1.text);
     }
 
     @Override

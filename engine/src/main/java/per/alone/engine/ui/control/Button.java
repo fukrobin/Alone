@@ -3,8 +3,10 @@ package per.alone.engine.ui.control;
 import lombok.Getter;
 import org.joml.Vector2f;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.behavior.LabeledBehavior;
+import per.alone.engine.ui.behavior.RegionBehavior;
 import per.alone.engine.ui.text.Text;
-import per.alone.engine.ui.text.TextAlignment;
+import per.alone.engine.ui.text.Alignment;
 import per.alone.event.EventHandler;
 import per.alone.stage.input.ActionEvent;
 
@@ -12,7 +14,7 @@ import per.alone.stage.input.ActionEvent;
  * @author Administrator
  */
 @Getter
-public class Button extends Region {
+public class Button extends Labeled {
     public static final Vector2f MIN_SIZE = new Vector2f(50f, 20f);
 
     private final Text textControl;
@@ -20,13 +22,13 @@ public class Button extends Region {
     public Button() {
         super();
         textControl = new Text();
-        textControl.setAlign(TextAlignment.CENTER);
+        textControl.setAlign(Alignment.CENTER);
         setSize(MIN_SIZE);
     }
 
     public Button(String text) {
         textControl = new Text(text);
-        textControl.setAlign(TextAlignment.CENTER);
+        textControl.setAlign(Alignment.CENTER);
         setSize(MIN_SIZE);
     }
 
@@ -57,6 +59,11 @@ public class Button extends Region {
 
     public void setText(String text) {
         textControl.setText(text);
+    }
+
+    @Override
+    protected LabeledBehavior<? extends Labeled> createWidgetBehavior() {
+        return super.createWidgetBehavior();
     }
 
     /**

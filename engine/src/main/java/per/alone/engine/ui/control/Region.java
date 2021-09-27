@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.Color;
+import per.alone.engine.ui.behavior.ParentBehavior;
+import per.alone.engine.ui.behavior.RegionBehavior;
 import per.alone.engine.ui.layout.Border;
 
 /**
@@ -13,6 +15,7 @@ import per.alone.engine.ui.layout.Border;
 @Getter
 @Setter
 public class Region extends Parent {
+
     protected Color backgroundColor;
 
     protected Border border;
@@ -26,13 +29,16 @@ public class Region extends Parent {
     @Override
     public void draw(Canvas canvas) {
         canvas.fillColor(backgroundColor);
-        canvas.drawRoundingRect(position.x, position.y,
-                                size.x, size.y,
-                                border.getRadius());
+        canvas.drawRoundingRect(getPosition(),getSize(), border.getRadius());
 
         canvas.strokeColor(border.getColor());
         canvas.strokeWidth(border.getWidth());
         canvas.stroke();
+    }
+
+    @Override
+    protected RegionBehavior<? extends Region> createWidgetBehavior() {
+        return new RegionBehavior<>(this);
     }
 
     @Override

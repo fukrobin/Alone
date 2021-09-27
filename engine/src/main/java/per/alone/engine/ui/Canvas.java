@@ -6,8 +6,8 @@ import org.lwjgl.nanovg.NVGTextRow;
 import org.lwjgl.nanovg.NanoVGGL3;
 import org.lwjgl.system.MemoryUtil;
 import per.alone.engine.exception.ComponentLoadException;
+import per.alone.engine.ui.text.Alignment;
 import per.alone.engine.ui.text.Font;
-import per.alone.engine.ui.text.TextAlignment;
 import per.alone.engine.util.Utils;
 
 import javax.annotation.Nullable;
@@ -52,9 +52,9 @@ public class Canvas {
     }
 
     private void loadFont() throws IOException {
-        sansFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
+        sansFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Deng.ttf");
         sansBoldFont = Utils.loadResourceToByteBuffer("/asserts/fonts/Dengb.ttf");
-        iconFont     = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
+        iconFont = Utils.loadResourceToByteBuffer("/asserts/fonts/fontawesome.ttf");
     }
 
     private long createNvgContext() {
@@ -107,7 +107,7 @@ public class Canvas {
         fillColor(color);
     }
 
-    public void textAlign(TextAlignment align) {
+    public void textAlign(Alignment align) {
         nvgTextAlign(context, align.getAlign());
     }
 
@@ -117,7 +117,7 @@ public class Canvas {
         textColor(font.getColor());
     }
 
-    public void setFont(Font font, TextAlignment alignment) {
+    public void setFont(Font font, Alignment alignment) {
         setFont(font);
         textAlign(alignment);
     }
@@ -150,7 +150,7 @@ public class Canvas {
     |                  draw                      |
     ============================================*/
 
-    public void drawText(CharSequence text, Vector2f pos, Font font, TextAlignment alignment) {
+    public void drawText(CharSequence text, Vector2f pos, Font font, Alignment alignment) {
         setFont(font, alignment);
         nvgText(context, pos.x, pos.y, text);
     }
@@ -199,9 +199,23 @@ public class Canvas {
         nvgTextBox(context, x, y, breakRowWidth, text);
     }
 
+    public void textBox(Vector2f position, float breakRowWidth, CharSequence text) {
+        textBox(position.x, position.y, breakRowWidth, text);
+    }
+
     public void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
                               @Nullable FloatBuffer bounds) {
         nvgTextBoxBounds(context, x, y, breakRowWidth, text, bounds);
+    }
+
+    public void textBoxBounds(Vector2f position, float breakRowWidth, CharSequence text,
+                              @Nullable FloatBuffer bounds) {
+        textBoxBounds(position.x, position.y, breakRowWidth, text, bounds);
+    }
+
+    public void textBoxBounds(Vector2f position, float breakRowWidth, CharSequence text,
+                              @Nullable float[] bounds) {
+        textBoxBounds(position.x, position.y, breakRowWidth, text, bounds);
     }
 
     public void textBoxBounds(float x, float y, float breakRowWidth, CharSequence text,
@@ -232,6 +246,10 @@ public class Canvas {
         fill();
     }
 
+    public void drawRoundingRect(Vector2f position, Vector2f size, float rounding) {
+        drawRoundingRect(position.x, position.y, size.x, size.y, rounding);
+    }
+
 
     /*--------------------------------------------
     |                  transform                  |
@@ -257,8 +275,8 @@ public class Canvas {
         MemoryUtil.memFree(sansFont);
         MemoryUtil.memFree(sansBoldFont);
         MemoryUtil.memFree(iconFont);
-        sansFont     = null;
+        sansFont = null;
         sansBoldFont = null;
-        iconFont     = null;
+        iconFont = null;
     }
 }

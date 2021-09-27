@@ -3,8 +3,9 @@ package per.alone.engine.ui.control;
 import lombok.Getter;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.behavior.WidgetBehavior;
 import per.alone.engine.ui.text.Font;
-import per.alone.engine.ui.text.TextAlignment;
+import per.alone.engine.ui.text.Alignment;
 import per.alone.engine.util.Utils;
 
 import java.nio.ByteBuffer;
@@ -16,7 +17,7 @@ import java.util.Objects;
  * @author Administrator
  */
 @Getter
-public class Icon extends Widgets {
+public class Icon extends Widget {
     private static final Map<Integer, ByteBuffer> CODE_POINT_ICON = new HashMap<>(16);
 
     protected Font font;
@@ -61,9 +62,14 @@ public class Icon extends Widgets {
     @Override
     public void draw(Canvas canvas) {
         if (iconBuffer != null) {
-            canvas.setFont(font, TextAlignment.TOP_LEFT);
+            canvas.setFont(font, Alignment.TOP_LEFT);
             canvas.drawText(iconBuffer, position.x, position.y);
         }
+    }
+
+    @Override
+    protected WidgetBehavior<? extends Widget> createWidgetBehavior() {
+        return null;
     }
 
     @Override

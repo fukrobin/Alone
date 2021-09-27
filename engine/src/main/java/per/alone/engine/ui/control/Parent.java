@@ -1,6 +1,8 @@
 package per.alone.engine.ui.control;
 
 import per.alone.engine.ui.Canvas;
+import per.alone.engine.ui.behavior.ParentBehavior;
+import per.alone.engine.ui.behavior.WidgetBehavior;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,44 +12,45 @@ import java.util.Objects;
  * @author Administrator
  * @date 20/5/18/09点58分
  */
-public class Parent extends Widgets {
-    @SuppressWarnings("SpellCheckingInspection")
-    private static final String[] CONTROLS_PACKAGE = {"pers.crobin.per.fkrobin.engine.ui.control.",
-            "pers.crobin.per.fkrobin.engine.ui.text."};
-
+public class Parent extends Widget {
     /**
      * 子控件链表
      */
-    private final List<Widgets> children;
+    private final List<Widget> children;
 
     public Parent() {
         super();
         children = new LinkedList<>();
     }
 
-    public void addChild(Widgets control) {
+    public void addChild(Widget control) {
         Objects.requireNonNull(control);
         control.setParent(this);
         control.setScene(getScene());
         children.add(control);
     }
 
-    public void addChildren(Widgets... controls) {
-        for (Widgets control : controls) {
+    public void addChildren(Widget... controls) {
+        for (Widget control : controls) {
             addChild(control);
         }
     }
 
-    public List<Widgets> getChildren() {
+    public List<Widget> getChildren() {
         return children;
     }
 
-    public boolean remove(Widgets control) {
+    public boolean remove(Widget control) {
         return children.remove(control);
     }
 
     @Override
     public void draw(Canvas canvas) {
         children.forEach(control -> control.draw(canvas));
+    }
+
+    @Override
+    protected ParentBehavior<? extends Parent> createWidgetBehavior() {
+        return new ParentBehavior<>(this);
     }
 }

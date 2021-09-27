@@ -2,7 +2,7 @@ package per.alone.engine.ui.control;
 
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.Color;
-import per.alone.engine.ui.text.TextAlignment;
+import per.alone.engine.ui.text.Alignment;
 
 /**
  * 配有文字的的图标控件，此控件需要自行为文字部分分配足够的空间，
@@ -43,7 +43,7 @@ public class IconText extends Icon {
         canvas.fontSize(font.getFontSize() - 2);
         canvas.fontFace("sans");
         canvas.fillColor(textColor);
-        canvas.textAlign(TextAlignment.TOP_LEFT);
+        canvas.textAlign(Alignment.TOP_LEFT);
         canvas.drawText(text, position.x + font.getFontSize() + 5, position.y + 1);
     }
 }

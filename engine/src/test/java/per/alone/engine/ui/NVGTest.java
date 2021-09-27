@@ -1,8 +1,8 @@
+package per.alone.engine.ui;
+
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryStack;
-import per.alone.engine.ui.Canvas;
-import per.alone.engine.ui.Color;
 import per.alone.stage.Window;
 import per.alone.stage.WindowManager;
 

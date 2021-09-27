@@ -18,10 +18,6 @@ public class Font {
 
     protected String fontFace;
 
-    public Font() {
-        this(14, "sans", Color.BLACK);
-    }
-
     public Font(int fontSize, String fontFace) {
         this(fontSize, fontFace, Color.BLACK);
     }
@@ -29,12 +25,20 @@ public class Font {
     public Font(int fontSize, String fontFace, Color color) {
         this.fontSize = fontSize;
         this.fontFace = fontFace;
-        this.color    = color;
+        this.color = color;
     }
 
     public void setFontSize(int fontSize) {
         if (fontSize > MIN_FONT_SIZE) {
             this.fontSize = fontSize;
         }
+    }
+
+    private static Font DEFAULT;
+    public static synchronized Font getDefault() {
+        if (DEFAULT == null) {
+            DEFAULT = new Font(14, "sans", Color.BLACK);
+        }
+        return DEFAULT;
     }
 }
