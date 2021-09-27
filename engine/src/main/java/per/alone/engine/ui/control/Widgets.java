@@ -112,6 +112,14 @@ public abstract class Widgets implements EventTarget {
         this.position.set(x, y);
     }
 
+    public float getX() {
+        return position.x;
+    }
+
+    public float getY() {
+        return position.y;
+    }
+
     ///////////////////////////////
     /// Size
     ///////////////////////////////
@@ -157,9 +165,6 @@ public abstract class Widgets implements EventTarget {
     /**
      * 此控件的绘图方法，因为Gui库的实现并不是直接操作OpenGL，需要一些外部依赖，
      * 因此每个控件都需要实现自己的绘图方法
-     *
-     * @param offsetX 此控件在窗口中的X轴上的偏移值，通常等于<code>Gui</code>的position.x
-     * @param offsetY 此控件在窗口中的Y轴上的偏移值，通常等于<code>Gui</code>的position.y
      */
     protected abstract void draw(Canvas canvas);
 

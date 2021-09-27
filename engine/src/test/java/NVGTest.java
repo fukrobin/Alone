@@ -1,5 +1,6 @@
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.system.MemoryStack;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.Color;
 import per.alone.stage.Window;
@@ -64,17 +65,23 @@ public class NVGTest {
         nvgSave(context);
         nvgBeginFrame(context, window.getWidth(), window.getHeight(), window.getPixelRadio());
 
-        nvgTranslate(context, 100, 100);
-
         canvas.fillColor(Color.WHITE);
-        canvas.drawRoundingRect(10,
-                                0,
-                                100, 100,
-                                5);
+        canvas.drawRoundingRect(200, 200, 100, 100, 5);
 
-        canvas.strokeColor(Color.RED);
-        canvas.strokeWidth(2);
-        canvas.stroke();
+        nvgTranslate(context, 100, 100);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            // FloatBuffer buffer = stack.mallocFloat(16);
+            // nvgTransformTranslate(buffer, 100, 100);
+
+            canvas.fillColor(Color.RED);
+            canvas.drawRoundingRect(100, 0, 100, 100, 5);
+            // nvgTranslate(context, -100, -100);
+            nvgResetTransform(context);
+            nvgTranslate(context, 200, 200);
+            canvas.fillColor(Color.ORANGE);
+            canvas.drawRoundingRect(10, 0, 100, 100, 5);
+        }
+
 
         nvgEndFrame(context);
         nvgRestore(context);

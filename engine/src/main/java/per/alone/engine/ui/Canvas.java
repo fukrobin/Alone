@@ -232,8 +232,17 @@ public class Canvas {
         fill();
     }
 
+
+    /*--------------------------------------------
+    |                  transform                  |
+    ============================================*/
+
     public void translate(float x, float y) {
         nvgTranslate(context, x, y);
+    }
+
+    public void resetTransform() {
+        nvgResetTransform(context);
     }
 
     public void cleanup() {
