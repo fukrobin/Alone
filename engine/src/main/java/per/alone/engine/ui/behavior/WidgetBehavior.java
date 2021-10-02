@@ -20,6 +20,12 @@ public class WidgetBehavior<W extends Widget> {
         this.widget = widget;
     }
 
+    /**
+     * 渲染当前的 WidgetBehavior 绑定的 Widget。
+     * 跳过不可见的 Widget
+     *
+     * @param canvas {@link Canvas}
+     */
     public final void render(Canvas canvas) {
         if (!widget.isVisible()) {
             return;
@@ -33,6 +39,13 @@ public class WidgetBehavior<W extends Widget> {
         renderContent(canvas);
     }
 
+    /**
+     * 渲染 content，这可以是任何想要渲染的内容，需要注意的是，
+     * 在此方法调用之前会将坐标系变换到此 Widget 的 Parent 坐标空间内
+     * （或者 Scene），因此应该不需要做任何的便偏移设置
+     *
+     * @param canvas {@link Canvas}
+     */
     protected void renderContent(Canvas canvas) {
 
     }
@@ -44,8 +57,8 @@ public class WidgetBehavior<W extends Widget> {
      * @param canvas 帆布
      */
     private void transform(Canvas canvas) {
-        float xOffset = widget.getXInScene() - widget.getX();
-        float yOffset = widget.getYInScene() - widget.getY();
+        float xOffset = widget.getPositionXInScene() - widget.getX();
+        float yOffset = widget.getPositionYInScene() - widget.getY();
         canvas.resetTransform();
         canvas.translate(xOffset, yOffset);
     }

@@ -26,7 +26,7 @@ public class RegionBehavior<W extends Region> extends ParentBehavior<W> {
 
         Border border = region.getBorder();
         canvas.fillColor(region.getBackgroundColor());
-        canvas.drawRoundingRect(region.getPosition(), region.getSize(), border.getRadius());
+        canvas.drawRoundingRect(region.getPositionInWindow(), region.getSize(), border.getRadius());
 
         canvas.strokeColor(border.getColor());
         canvas.strokeWidth(border.getWidth());

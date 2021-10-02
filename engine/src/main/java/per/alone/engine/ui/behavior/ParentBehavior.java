@@ -24,7 +24,7 @@ public class ParentBehavior<W extends Parent> extends WidgetBehavior<W> {
     @Override
     protected void renderContent(Canvas canvas) {
         for (Widget child : getWidget().getChildren()) {
-            child.getDefaultBehavior().render(canvas);
+            child.getBehavior().render(canvas);
         }
     }
 }

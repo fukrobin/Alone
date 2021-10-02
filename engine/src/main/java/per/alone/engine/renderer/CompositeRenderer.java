@@ -30,7 +30,7 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
     /**
      * Scene渲染器
      */
-    private SceneRenderer sceneRenderer;
+//    private SceneRenderer sceneRenderer;  todo
 
     /**
      * Gui渲染器
@@ -49,10 +49,10 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
     @Override
     public void onEngineContextEvent(EngineContextEvent engineContextEvent) {
         EngineContext engineContext = engineContextEvent.getSource();
-        sceneRenderer = engineContext.getSceneRenderer();
-        guiRenderer   = engineContext.getGuiRenderer();
+//        sceneRenderer = engineContext.getSceneRenderer();
+        guiRenderer = engineContext.getGuiRenderer();
 
-        sceneRenderer.initialize();
+//        sceneRenderer.initialize();
 
         GLHelp.setGLState();
     }
@@ -63,7 +63,7 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         window.resetViewport();
 
-        sceneRenderer.render(window, engineContext);
+//        sceneRenderer.render(window, engineContext);
 
         for (RendererComponent rendererComponent : rendererList) {
             rendererComponent.render(window, engineContext);
@@ -91,7 +91,7 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
 
     @Override
     public void close() {
-        sceneRenderer.close();
+//        sceneRenderer.close();
         guiRenderer.close();
 
         for (RendererComponent rendererComponent : rendererList) {

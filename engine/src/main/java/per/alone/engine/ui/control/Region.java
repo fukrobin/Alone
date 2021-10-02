@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.Color;
-import per.alone.engine.ui.behavior.ParentBehavior;
 import per.alone.engine.ui.behavior.RegionBehavior;
 import per.alone.engine.ui.layout.Border;
 

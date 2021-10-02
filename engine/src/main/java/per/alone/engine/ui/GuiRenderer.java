@@ -29,7 +29,7 @@ public class GuiRenderer implements RendererComponent {
     public void render(Window window, EngineContext engineContext) {
         guiContext.start(window);
 
-        scene.getRoot().render(guiContext.getCanvas());
+        scene.getRoot().getBehavior().render(guiContext.getCanvas());
 
         guiContext.end();
     }

@@ -5,8 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import per.alone.AloneContext;
 import per.alone.engine.context.EngineContext;
+import per.alone.engine.context.EngineContextEvent;
+import per.alone.engine.context.EngineContextListener;
+import per.alone.engine.renderer.RendererComponent;
 import per.alone.stage.Window;
 import per.alone.stage.WindowManager;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -16,8 +23,12 @@ import static org.lwjgl.glfw.GLFW.*;
  * @author fkobin
  * @date 2020/4/4 19:29
  **/
-public abstract class BaseEngine {
+public class BaseEngine {
     protected static final Logger LOGGER = LoggerFactory.getLogger("BaseEngine");
+
+    private static EngineCore engineCore;
+
+    private String[] args;
 
     public static void launch(String[] args) {
         StackTraceElement[] cause = Thread.currentThread().getStackTrace();
@@ -39,17 +50,40 @@ public abstract class BaseEngine {
         if (callingClassName == null) {
             throw new RuntimeException("Error: unable to determine main class");
         }
-        Object object = null;
+        BaseEngine object;
         try {
             Class<?> clazz = Class.forName(callingClassName, true, Thread.currentThread().getContextClassLoader());
-            object = clazz.newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            Constructor<?> defaultConstructor = null;
+            for (Constructor<?> constructor : clazz.getConstructors()) {
+                if (constructor.getParameterCount() == 0) {
+                    defaultConstructor = constructor;
+                    break;
+                }
+            }
+            if (defaultConstructor == null) {
+                throw new RuntimeException("Base Engine must be have a default constructor");
+            }
+            object      = (BaseEngine) defaultConstructor.newInstance();
+            object.args = args;
+            object.launch();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        launch((BaseEngine) object, args);
     }
 
-    public static void launch(BaseEngine baseEngine, String[] args) {
+    private static AloneContext createContext() {
+        Window window = createWindow(854, 480, "Voxel Engine", true);
+        return AloneContext.builder()
+                           .window(window)
+                           .build();
+    }
+
+    private static Window createWindow(int width, int height, String title, boolean vsync) {
+        WindowManager.init();
+        return WindowManager.createWindow(width, height, title, vsync);
+    }
+
+    void launch() {
         LOGGER.info("Engine launch.");
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) {
@@ -58,18 +92,19 @@ public abstract class BaseEngine {
 
         LOGGER.info("Engine initializing.");
 
+        BaseEngine baseEngine = this;
         AloneContext context = createContext();
-        EngineCore engineCore = new EngineCore(context.getWindow(), true) {
+        engineCore = new EngineCore(context.getWindow(), true) {
             @Override
-            protected void start(Window window, EngineContext linker) {
-                super.start(window, linker);
-                baseEngine.start(args, linker, window);
+            protected void start(Window window, EngineContext engineContext) {
+                super.start(window, engineContext);
+                baseEngine.start(args, engineContext, window);
             }
 
             @Override
             protected void update(float interval) {
                 super.update(interval);
-                baseEngine.run();
+                baseEngine.update();
             }
 
             @Override
@@ -92,21 +127,10 @@ public abstract class BaseEngine {
             engineCore.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            baseEngine.shutdown();
+            LOGGER.info("Engine quit.");
         }
-        baseEngine.shutdown();
-        LOGGER.info("Engine quit.");
-    }
-
-    private static AloneContext createContext() {
-        Window window = createWindow(854, 480, "Voxel Engine", true);
-        return AloneContext.builder()
-                           .window(window)
-                           .build();
-    }
-
-    private static Window createWindow(int width, int height, String title, boolean vsync) {
-        WindowManager.init();
-        return WindowManager.createWindow(width, height, title, vsync);
     }
 
     private void loop() {
@@ -132,9 +156,45 @@ public abstract class BaseEngine {
 
     }
 
-    public abstract void errorCallback(Exception e);
+    public void addEngineComponents(EngineComponent... engineComponents) {
+        engineCore.addEngineComponents(engineComponents);
+    }
 
-    public abstract void start(String[] args, EngineContext engineContext, Window window);
+    public void addRendererComponents(RendererComponent... rendererComponents) {
+        engineCore.addRendererComponents(rendererComponents);
+    }
 
-    public abstract void run();
+    public void addEngineComponents(List<EngineComponent> engineComponents) {
+        engineCore.addEngineComponents(engineComponents);
+    }
+
+    public void addRendererComponents(List<RendererComponent> rendererComponents) {
+        engineCore.addRendererComponents(rendererComponents);
+    }
+
+    public void addEngineContextListeners(
+            EngineContextListener<? extends EngineContextEvent>... engineContextListeners) {
+        engineCore.addEngineContextListeners(engineContextListeners);
+    }
+
+    public void addEngineContextListeners(
+            List<EngineContextListener<? extends EngineContextEvent>> engineContextListeners) {
+        engineCore.addEngineContextListeners(engineContextListeners);
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    protected void errorCallback(Exception e) {
+
+    }
+
+    protected void start(String[] args, EngineContext engineContext, Window window) {
+
+    }
+
+    protected void update() {
+
+    }
 }

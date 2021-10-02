@@ -1,7 +1,6 @@
 package per.alone.engine.ui.control;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.joml.Vector2f;
 import org.lwjgl.nanovg.NVGColor;
 import per.alone.engine.geometry.BoundingBox;
@@ -19,19 +18,22 @@ import java.util.Set;
  * * @author fukrobin
  */
 @Getter
-@Setter
 public abstract class Widget implements EventTarget {
     protected static final NVGColor RESULT = NVGColor.create();
+
+    private final Vector2f positionInScene = new Vector2f();
+
+    private final Vector2f positionInWindow = new Vector2f();
 
     /**
      * 在Gui中的偏移位置，而不是在整个窗口中的位置
      */
-    protected final Vector2f position;
+    protected Vector2f position;
 
     /**
      * 此控件的尺寸
      */
-    protected final Vector2f size;
+    protected Vector2f size;
 
     protected SimpleScene scene;
 
@@ -45,15 +47,16 @@ public abstract class Widget implements EventTarget {
      */
     private boolean visible;
 
-    private WidgetBehavior<? extends Widget> defaultBehavior;
+    private WidgetBehavior<? extends Widget> behavior;
 
     private Map<EventType<? extends Event>, CompositeEventHandler<? extends Event>> eventHandlerMap;
 
     protected Widget() {
         this.position = new Vector2f();
-        this.size = new Vector2f();
-        this.visible = true;
-        this.parent = null;
+        this.size     = new Vector2f();
+        this.visible  = true;
+        this.parent   = null;
+        this.behavior = createWidgetBehavior();
     }
 
     @SuppressWarnings("unchecked")
@@ -139,30 +142,44 @@ public abstract class Widget implements EventTarget {
         if (parent == null) {
             return new BoundingBox(position.x, position.y, size.x, size.y);
         }
-        Vector2f parentPosition = parent.getPosition();
-        return new BoundingBox(parentPosition.x + this.position.x,
-                               parentPosition.y + this.position.y, size.x, size.y);
+        return new BoundingBox(getPositionXInScene(), getPositionYInScene(), size.x, size.y);
     }
 
-    public float getXInScene() {
+    public float getPositionXInScene() {
         float x = position.x;
         if (parent != null) {
-            x += parent.getXInScene();
+            x += parent.getPositionXInScene();
         }
         return x;
     }
 
-    public float getYInScene() {
+    public float getPositionYInScene() {
         float y = position.y;
         if (parent != null) {
-            y += parent.getYInScene();
+            y += parent.getPositionYInScene();
         }
         return y;
     }
 
+    public Vector2f getPositionInScene() {
+        return positionInScene.set(getPositionXInScene(), getPositionYInScene());
+    }
+
+    public float getPositionXInWidow() {
+        return getPositionXInScene() + scene.getX();
+    }
+
+    public float getPositionYInWidow() {
+        return getPositionYInScene() + scene.getY();
+    }
+
+    public Vector2f getPositionInWindow() {
+        return positionInWindow.set(getPositionXInWidow(), getPositionYInWidow());
+    }
+
     public final void render(Canvas canvas) {
         // 平移坐标系，以适应 scene 在 window 中的偏移
-        canvas.translate(scene.getX() + getXInScene(), scene.getY() + getYInScene());
+        canvas.translate(scene.getX() + getPositionXInScene(), scene.getY() + getPositionYInScene());
 
         draw(canvas);
     }
@@ -175,11 +192,23 @@ public abstract class Widget implements EventTarget {
 
     protected abstract WidgetBehavior<?> createWidgetBehavior();
 
-    public WidgetBehavior<?> getDefaultBehavior() {
-        if (defaultBehavior == null) {
-            defaultBehavior = createWidgetBehavior();
+    public WidgetBehavior<?> getBehavior() {
+        if (behavior == null) {
+            behavior = createWidgetBehavior();
         }
-        return defaultBehavior;
+        return behavior;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setScene(SimpleScene scene) {
+        this.scene = scene;
     }
 
     @Override

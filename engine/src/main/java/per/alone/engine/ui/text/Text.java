@@ -5,9 +5,6 @@ import lombok.Setter;
 import org.lwjgl.system.MemoryStack;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.behavior.TextBehavior;
-import per.alone.engine.ui.behavior.WidgetBehavior;
-import per.alone.engine.ui.control.Parent;
-import per.alone.engine.ui.control.Region;
 import per.alone.engine.ui.control.Widget;
 
 import java.nio.FloatBuffer;
@@ -43,7 +40,7 @@ public class Text extends Widget {
     public Text(String text) {
         super();
         Objects.requireNonNull(text);
-        this.text = text;
+        this.text  = text;
         this.align = DEFAULT_ALIGNMENT;
     }
 
@@ -52,6 +49,10 @@ public class Text extends Widget {
             font = Font.getDefault();
         }
         return font;
+    }
+
+    public String getText() {
+        return text == null ? "" : text;
     }
 
     @Override

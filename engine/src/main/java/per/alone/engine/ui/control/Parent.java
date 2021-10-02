@@ -2,8 +2,8 @@ package per.alone.engine.ui.control;
 
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.behavior.ParentBehavior;
-import per.alone.engine.ui.behavior.WidgetBehavior;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +30,13 @@ public class Parent extends Widget {
         children.add(control);
     }
 
+    /**
+     * 更新部件的布局，默认不作任何事情，由具体布局组件实现
+     */
+    protected void requestLayout() {
+
+    }
+
     public void addChildren(Widget... controls) {
         for (Widget control : controls) {
             addChild(control);
@@ -37,7 +44,7 @@ public class Parent extends Widget {
     }
 
     public List<Widget> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
     public boolean remove(Widget control) {

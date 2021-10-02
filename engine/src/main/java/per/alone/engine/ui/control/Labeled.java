@@ -41,6 +41,6 @@ public class Labeled extends Region {
 
     @Override
     protected LabeledBehavior<? extends Labeled> createWidgetBehavior() {
-        return null;
+        return new LabeledBehavior<>(this);
     }
 }

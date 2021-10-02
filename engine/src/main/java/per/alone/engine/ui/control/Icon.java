@@ -4,8 +4,8 @@ import lombok.Getter;
 import per.alone.engine.geometry.Bounds;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.behavior.WidgetBehavior;
-import per.alone.engine.ui.text.Font;
 import per.alone.engine.ui.text.Alignment;
+import per.alone.engine.ui.text.Font;
 import per.alone.engine.util.Utils;
 
 import java.nio.ByteBuffer;

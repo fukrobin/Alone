@@ -4,9 +4,8 @@ import lombok.Getter;
 import org.joml.Vector2f;
 import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.behavior.LabeledBehavior;
-import per.alone.engine.ui.behavior.RegionBehavior;
-import per.alone.engine.ui.text.Text;
 import per.alone.engine.ui.text.Alignment;
+import per.alone.engine.ui.text.Text;
 import per.alone.event.EventHandler;
 import per.alone.stage.input.ActionEvent;
 

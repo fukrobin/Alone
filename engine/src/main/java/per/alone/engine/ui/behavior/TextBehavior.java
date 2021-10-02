@@ -26,7 +26,7 @@ public class TextBehavior<W extends Text> extends WidgetBehavior<W> {
             canvas.textAlign(widget.getAlign());
 
             float wrappingWidth = widget.getWrappingWidth();
-            Vector2f position = widget.getPosition();
+            Vector2f position = widget.getPositionInWindow();
             if (wrappingWidth != 0) {
                 Vector2f size = widget.getSize();
                 canvas.textBox(position, wrappingWidth, text);
