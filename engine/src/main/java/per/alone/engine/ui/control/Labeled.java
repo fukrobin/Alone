@@ -21,6 +21,7 @@ public class Labeled extends Region {
     private Color textColor;
 
     public Labeled() {
+        super();
         alignment = Alignment.CENTER_LEFT;
         text = "";
         textColor = Color.BLACK;

@@ -18,5 +18,6 @@ public class SimpleScene extends Scene {
 
     public void setRoot(Region root) {
         this.root = root;
+        this.root.setScene(this);
     }
 }

@@ -1,7 +1,7 @@
 package per.alone;
 
-import per.alone.engine.context.EngineContext;
-import per.alone.engine.kernel.BaseEngine;
+import per.alone.engine.core.BaseEngine;
+import per.alone.engine.core.EngineContext;
 import per.alone.engine.ui.GuiRenderer;
 import per.alone.engine.ui.SimpleScene;
 import per.alone.engine.ui.control.Button;
@@ -14,8 +14,8 @@ public class EngineTest extends BaseEngine {
     }
 
     @Override
-    protected void start(String[] args, EngineContext engineContext, Window window) {
-        GuiRenderer guiRenderer = engineContext.getGuiRenderer();
+    protected void start(EngineContext engineContext, Window window) {
+        GuiRenderer guiRenderer = engineContext.getComponent(GuiRenderer.class);
         SimpleScene scene = new SimpleScene();
 
         Button button = new Button();

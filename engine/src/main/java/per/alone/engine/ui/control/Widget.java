@@ -56,7 +56,6 @@ public abstract class Widget implements EventTarget {
         this.size     = new Vector2f();
         this.visible  = true;
         this.parent   = null;
-        this.behavior = createWidgetBehavior();
     }
 
     @SuppressWarnings("unchecked")

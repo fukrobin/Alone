@@ -1,4 +1,4 @@
-package per.alone.engine.kernel;
+package per.alone.engine.core;
 
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;

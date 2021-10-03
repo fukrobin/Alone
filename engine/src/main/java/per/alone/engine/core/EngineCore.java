@@ -1,13 +1,11 @@
-package per.alone.engine.kernel;
+package per.alone.engine.core;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import per.alone.engine.context.EngineContext;
-import per.alone.engine.context.EngineContextEvent;
-import per.alone.engine.context.EngineContextListener;
-import per.alone.engine.renderer.CompositeRenderer;
+import per.alone.engine.EngineConfigLoader;
 import per.alone.engine.renderer.RendererComponent;
+import per.alone.engine.renderer.RendererManager;
 import per.alone.engine.util.CpuTimer;
 import per.alone.engine.util.GPUTimer;
 import per.alone.engine.util.Timer;
@@ -15,7 +13,9 @@ import per.alone.engine.util.Utils;
 import per.alone.stage.Window;
 import per.alone.stage.WindowManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Administrator
@@ -35,10 +35,6 @@ class EngineCore extends Thread {
 
     private final Window window;
 
-    private List<EngineComponent> engineComponents;
-
-    private List<RendererComponent> rendererComponents;
-
     private List<EngineContextListener<?>> engineContextListeners;
 
     private EngineContext engineContext;
@@ -49,7 +45,16 @@ class EngineCore extends Thread {
 
     private int ups = 30;
 
-    private CompositeRenderer compositeRenderer = new CompositeRenderer();
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected EngineCore(Window window) {
+        super(EngineCore.class.getSimpleName());
+        this.timer    = new Timer();
+        this.cpuTimer = new CpuTimer();
+        this.gpuTimer = new GPUTimer();
+        this.window   = window;
+
+        setEngineContextListeners((Collection) loadComponent(EngineContextListener.class));
+    }
 
     protected void start(Window window, EngineContext engineContext) {
 
@@ -73,6 +78,9 @@ class EngineCore extends Thread {
      * 组件可以通过监听此事件完成一些准备工作
      */
     private void prepareEngineContext() {
+        engineContext.registerComponents(loadComponent(EngineComponent.class));
+        engineContext.registerComponents(loadComponent(RendererComponent.class));
+
         postPreparedEngineContextEvent();
     }
 
@@ -83,41 +91,40 @@ class EngineCore extends Thread {
         EngineContextEvent engineContextEvent = new EngineContextEvent(engineContext,
                                                                        EngineContextEvent.PREPARED_ENGINE_CONTEXT);
         for (EngineContextListener<? extends EngineContextEvent> listener : getEngineContextListeners()) {
+            if (listener instanceof RendererManager) {
+                engineContext.setRendererManager((RendererManager) listener);
+            }
             listener.onEngineContextEvent(engineContextEvent);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected EngineCore(Window window, boolean vsync) {
-        super(EngineCore.class.getSimpleName());
-        this.timer    = new Timer();
-        this.cpuTimer = new CpuTimer();
-        this.gpuTimer = new GPUTimer();
-
-        setEngineComponents(loadComponent(EngineComponent.class));
-        setRendererComponents(loadComponent(RendererComponent.class));
-        setEngineContextListeners(loadComponent(EngineContextListener.class));
-
-        this.window = window;
     }
 
     private List<EngineContextListener<? extends EngineContextEvent>> getEngineContextListeners() {
         return engineContextListeners;
     }
 
+    private void setEngineContextListeners(Collection<? extends EngineContextListener<?>> engineContextListeners) {
+        this.engineContextListeners = new ArrayList<>(engineContextListeners);
+    }
+
     /**
      * 每次更新调用所有更新脚本
      */
     protected void update(float interval) {
-        for (EngineComponent engineComponent : engineComponents) {
+        for (EngineComponent engineComponent : getEngineComponents()) {
             engineComponent.update(engineContext);
         }
 
+        timer.update();
         window.setResized(false);
     }
 
-    private <T> void setEngineContextListeners(Collection<? extends EngineContextListener<?>> engineContextListeners) {
-        this.engineContextListeners = new ArrayList<>(engineContextListeners);
+    /**
+     * 获取引擎中的所有组件，执行 update 生命周期
+     *
+     * @return 引擎中的所有组件
+     */
+    private Collection<EngineComponent> getEngineComponents() {
+        return engineContext.getComponents(EngineComponent.class);
     }
 
     private void render() {
@@ -129,27 +136,19 @@ class EngineCore extends Thread {
     }
 
     /**
-     * 调用所有的渲染组件的 render() 方法进行渲染
+     * 将渲染委托给 Renderer Manager
      *
      * @see RendererComponent
+     * @see RendererManager
      */
     private void applyRendererComponent() {
-        for (RendererComponent rendererComponent : getRendererComponents()) {
-            rendererComponent.render(window, engineContext);
-        }
-    }
-
-    private List<RendererComponent> getRendererComponents() {
-        return rendererComponents;
-    }
-
-    private void setRendererComponents(Collection<? extends RendererComponent> rendererComponents) {
-        this.rendererComponents = new ArrayList<>(rendererComponents);
+        engineContext.getRendererManager().render(window, engineContext);
     }
 
     private void loop(Window window) {
         float interval = 1f / ups;
         timer.init(interval);
+        engineContext.setRunning(running);
         while (running) {
             timer.tick();
 
@@ -172,6 +171,7 @@ class EngineCore extends Thread {
             return;
         }
         running = false;
+        engineContext.setRunning(running);
     }
 
     private void preProcessFrame() {
@@ -224,43 +224,8 @@ class EngineCore extends Thread {
         Utils.cleanUp();
     }
 
-    public List<EngineComponent> getEngineComponents() {
-        return Collections.unmodifiableList(engineComponents);
-    }
-
-    private void setEngineComponents(Collection<? extends EngineComponent> engineComponents) {
-        this.engineComponents = new ArrayList<>(engineComponents);
-    }
-
-    public void addEngineComponents(EngineComponent... engineComponents) {
-        this.engineComponents.addAll(Arrays.asList(engineComponents));
-    }
-
-    public void addEngineComponents(List<EngineComponent> engineComponents) {
-        this.engineComponents.addAll(engineComponents);
-    }
-
-    public void addRendererComponents(RendererComponent... rendererComponents) {
-        this.rendererComponents.addAll(Arrays.asList(rendererComponents));
-    }
-
-    public void addRendererComponents(List<RendererComponent> rendererComponents) {
-        this.rendererComponents.addAll(rendererComponents);
-    }
-
-    public void addEngineContextListeners(
-            EngineContextListener<? extends EngineContextEvent>... engineContextListeners) {
-        this.engineContextListeners.addAll(Arrays.asList(engineContextListeners));
-    }
-
-    public void addEngineContextListeners(
-            List<EngineContextListener<? extends EngineContextEvent>> engineContextListeners) {
-        this.engineContextListeners.addAll(engineContextListeners);
-    }
-
-    @SuppressWarnings("unchecked")
     private <T> Collection<T> loadComponent(Class<T> componentType) {
         // TODO: 2021/9/29 load component from config file or annotation
-        return Arrays.asList((T) compositeRenderer);
+        return EngineConfigLoader.loadClass(componentType, null);
     }
 }

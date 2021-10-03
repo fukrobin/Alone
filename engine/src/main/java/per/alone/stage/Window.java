@@ -194,6 +194,8 @@ public class Window {
 
     private int fps;
 
+    private final GLFWWindowCloseCallbackI defaultWindowCloseCallback = window -> close();
+
     public Window(int width, int height, String title) {
         this(width, height, title, true);
     }
@@ -475,6 +477,9 @@ public class Window {
         setCursorIcon();
     }
 
+    /**
+     * 设置默认的 GLFW 事件回调
+     */
     private void addDefaultCallBacks() {
         glfwSetWindowSizeCallback(windowId, WindowSizeCallback.INSTANCE);
         glfwSetFramebufferSizeCallback(windowId, FramebufferSizeCallback.INSTANCE);
@@ -494,6 +499,7 @@ public class Window {
         addWindowMaximizeCallback(defaultWindowMaximizeCallback);
         addKeyCallback(defaultKeyCallback);
         addCursorEnterCallback(defaultCursorEnterCallback);
+        addWindowCloseCallback(defaultWindowCloseCallback);
     }
 
     private void addWindowEventProducerCallback() {

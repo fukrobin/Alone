@@ -7,6 +7,6 @@ public class LabeledBehavior<W extends Labeled> extends RegionBehavior<W> {
     public LabeledBehavior(final W widget) {
         super(widget);
 
-        getChildren().add(new Text(widget.getText()));
+        widget.addChild(new Text(widget.getText()));
     }
 }

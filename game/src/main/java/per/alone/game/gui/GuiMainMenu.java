@@ -1,7 +1,7 @@
 package per.alone.game.gui;
 
-import per.alone.engine.kernel.EngineContext;
-import per.alone.engine.kernel.EngineThread;
+import per.alone.engine.core.EngineContext;
+import per.alone.engine.core.EngineThread;
 import per.alone.engine.scene.Scene;
 import per.alone.engine.scene.SkyBox;
 import per.alone.engine.scene.voxel.Chunk;

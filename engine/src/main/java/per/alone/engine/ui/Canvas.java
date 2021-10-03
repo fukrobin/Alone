@@ -31,10 +31,6 @@ public class Canvas {
 
     private long context = -1;
 
-    private final int offsetX;
-
-    private final int offsetY;
-
     public Canvas() {
         try {
             loadFont();
@@ -47,8 +43,6 @@ public class Canvas {
                 cleanup();
             }
         }
-        offsetX = 0;
-        offsetY = 0;
     }
 
     private void loadFont() throws IOException {

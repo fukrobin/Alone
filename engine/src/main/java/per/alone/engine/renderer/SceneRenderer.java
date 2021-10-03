@@ -2,9 +2,11 @@ package per.alone.engine.renderer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL31;
-import per.alone.engine.context.EngineContext;
+import per.alone.engine.Ordered;
+import per.alone.engine.annotation.Order;
+import per.alone.engine.core.DebugInfo;
+import per.alone.engine.core.EngineContext;
 import per.alone.engine.global.GlobalVariable;
-import per.alone.engine.kernel.DebugInfo;
 import per.alone.engine.scene.*;
 import per.alone.engine.scene.voxel.Agent;
 import per.alone.engine.scene.voxel.Chunk;
@@ -24,6 +26,7 @@ import static org.lwjgl.opengl.GL30.*;
  * @author fkobin
  * @date 2020/4/5 01:12
  **/
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SceneRenderer implements RendererComponent {
     private static final Matrix4f TEMP = new Matrix4f().translate(0, -5, -5);
 
@@ -69,6 +72,10 @@ public class SceneRenderer implements RendererComponent {
         return voxelScene;
     }
 
+    /**
+     * 初始化
+     * todo
+     */
     public void initialize() {
         try {
             setupSkyBoxShader();

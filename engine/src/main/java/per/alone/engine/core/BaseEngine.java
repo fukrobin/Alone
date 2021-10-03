@@ -1,19 +1,14 @@
-package per.alone.engine.kernel;
+package per.alone.engine.core;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import per.alone.AloneContext;
-import per.alone.engine.context.EngineContext;
-import per.alone.engine.context.EngineContextEvent;
-import per.alone.engine.context.EngineContextListener;
-import per.alone.engine.renderer.RendererComponent;
 import per.alone.stage.Window;
 import per.alone.stage.WindowManager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -94,11 +89,11 @@ public class BaseEngine {
 
         BaseEngine baseEngine = this;
         AloneContext context = createContext();
-        engineCore = new EngineCore(context.getWindow(), true) {
+        engineCore = new EngineCore(context.getWindow()) {
             @Override
             protected void start(Window window, EngineContext engineContext) {
                 super.start(window, engineContext);
-                baseEngine.start(args, engineContext, window);
+                baseEngine.start(engineContext, window);
             }
 
             @Override
@@ -156,32 +151,6 @@ public class BaseEngine {
 
     }
 
-    public void addEngineComponents(EngineComponent... engineComponents) {
-        engineCore.addEngineComponents(engineComponents);
-    }
-
-    public void addRendererComponents(RendererComponent... rendererComponents) {
-        engineCore.addRendererComponents(rendererComponents);
-    }
-
-    public void addEngineComponents(List<EngineComponent> engineComponents) {
-        engineCore.addEngineComponents(engineComponents);
-    }
-
-    public void addRendererComponents(List<RendererComponent> rendererComponents) {
-        engineCore.addRendererComponents(rendererComponents);
-    }
-
-    public void addEngineContextListeners(
-            EngineContextListener<? extends EngineContextEvent>... engineContextListeners) {
-        engineCore.addEngineContextListeners(engineContextListeners);
-    }
-
-    public void addEngineContextListeners(
-            List<EngineContextListener<? extends EngineContextEvent>> engineContextListeners) {
-        engineCore.addEngineContextListeners(engineContextListeners);
-    }
-
     public void setArgs(String[] args) {
         this.args = args;
     }
@@ -190,7 +159,7 @@ public class BaseEngine {
 
     }
 
-    protected void start(String[] args, EngineContext engineContext, Window window) {
+    protected void start(EngineContext engineContext, Window window) {
 
     }
 

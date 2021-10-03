@@ -24,10 +24,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -48,6 +45,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  **/
 public class Utils {
     private static final Logger LOGGER = LoggerFactory.getLogger("Util");
+
+    private static final String XML_FILE_EXTENSION = ".xml";
 
     private static final ThreadFactory FACTORY
             = new ThreadFactoryBuilder().setNameFormat(
@@ -217,6 +216,20 @@ public class Utils {
             return buffer;
         }
         return null;
+    }
+
+    public static Properties loadProperties(URL url) throws IOException {
+        Properties properties = new Properties();
+        try (InputStream is = url.openConnection().getInputStream()) {
+            String filename = url.getPath();
+            if (filename != null && filename.endsWith(XML_FILE_EXTENSION)) {
+                throw new UnsupportedOperationException("XML support disabled");
+            } else {
+                properties.load(is);
+            }
+        }
+
+        return properties;
     }
 
     /******************************************************************************

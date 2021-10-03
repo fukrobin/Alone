@@ -1,15 +1,16 @@
 package per.alone.engine.renderer;
 
 import lombok.extern.slf4j.Slf4j;
-import per.alone.engine.context.EngineContext;
-import per.alone.engine.context.EngineContextEvent;
-import per.alone.engine.context.SmartEngineContextListener;
-import per.alone.engine.ui.GuiRenderer;
+import per.alone.engine.Ordered;
+import per.alone.engine.annotation.AnnotationOrderComparator;
+import per.alone.engine.annotation.Order;
+import per.alone.engine.core.EngineContext;
+import per.alone.engine.core.EngineContextEvent;
+import per.alone.engine.core.SmartEngineContextListener;
 import per.alone.engine.util.GLHelp;
 import per.alone.event.EventType;
 import per.alone.stage.Window;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -17,27 +18,22 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
+ * 渲染管理器，自定义扩展点。渲染器都将按照 {@link AnnotationOrderComparator}
+ * 进行排序
+ *
  * @author fkobin
  * @date 2020/3/27 21:29
  **/
 @Slf4j
-public class CompositeRenderer implements RendererComponent, SmartEngineContextListener {
+public final class RendererManager implements SmartEngineContextListener {
     /**
      * 用户自定义渲染器
      */
     private final List<RendererComponent> rendererList;
 
-    /**
-     * Scene渲染器
-     */
-//    private SceneRenderer sceneRenderer;  todo
+    private boolean dirty = false;
 
-    /**
-     * Gui渲染器
-     */
-    private GuiRenderer guiRenderer;
-
-    public CompositeRenderer() {
+    public RendererManager() {
         rendererList = new LinkedList<>();
     }
 
@@ -48,28 +44,22 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
 
     @Override
     public void onEngineContextEvent(EngineContextEvent engineContextEvent) {
-        EngineContext engineContext = engineContextEvent.getSource();
-//        sceneRenderer = engineContext.getSceneRenderer();
-        guiRenderer = engineContext.getGuiRenderer();
-
-//        sceneRenderer.initialize();
+        List<RendererComponent> components = engineContextEvent.getSource().getComponents(RendererComponent.class);
+        rendererList.addAll(components);
 
         GLHelp.setGLState();
     }
 
-    @Override
     public void render(Window window, EngineContext engineContext) {
         GLHelp.frameBufferClearColor();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         window.resetViewport();
 
-//        sceneRenderer.render(window, engineContext);
+        sortRendererIfNecessary();
 
         for (RendererComponent rendererComponent : rendererList) {
             rendererComponent.render(window, engineContext);
         }
-
-        guiRenderer.render(window, engineContext);
     }
 
     /**
@@ -79,7 +69,11 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
      */
     public void addRenderer(RendererComponent renderer) {
         Objects.requireNonNull(renderer);
+        if (this.rendererList.contains(renderer)) {
+            throw new IllegalStateException("重复添加 RenderComponent");
+        }
         this.rendererList.add(renderer);
+        this.dirty = true;
     }
 
     public boolean removeRenderer(RendererComponent renderer) {
@@ -89,17 +83,17 @@ public class CompositeRenderer implements RendererComponent, SmartEngineContextL
         return false;
     }
 
-    @Override
-    public void close() {
-//        sceneRenderer.close();
-        guiRenderer.close();
-
-        for (RendererComponent rendererComponent : rendererList) {
-            try {
-                rendererComponent.close();
-            } catch (IOException e) {
-                log.warn("Renderer[{}] exception occurred during close: {}", rendererComponent.getName(), e);
-            }
+    /**
+     * 如果 renderer list 是脏的，则排序。
+     * 排序根据 {@link Ordered#getOrder()} 返回值或 {@link Order}
+     * 注解的值进行排序，值越小，表示优先级越高
+     */
+    private void sortRendererIfNecessary() {
+        if (!dirty) {
+            return;
         }
+
+        AnnotationOrderComparator.sort(rendererList);
+        dirty = false;
     }
 }

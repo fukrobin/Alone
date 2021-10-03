@@ -1,13 +1,15 @@
 package per.alone.engine.ui;
 
+import per.alone.engine.annotation.Order;
 import per.alone.engine.config.GuiContext;
-import per.alone.engine.context.EngineContext;
+import per.alone.engine.core.EngineContext;
 import per.alone.engine.renderer.RendererComponent;
 import per.alone.stage.Window;
 
 /**
  * @author Administrator
  */
+@Order
 public class GuiRenderer implements RendererComponent {
     private final GuiContext guiContext;
 

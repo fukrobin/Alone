@@ -37,7 +37,7 @@ public class Font {
     private static Font DEFAULT;
     public static synchronized Font getDefault() {
         if (DEFAULT == null) {
-            DEFAULT = new Font(14, "sans", Color.BLACK);
+            DEFAULT = new Font(14, "sans", Color.RED);
         }
         return DEFAULT;
     }

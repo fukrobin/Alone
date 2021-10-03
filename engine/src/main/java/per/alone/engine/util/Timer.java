@@ -37,8 +37,10 @@ public class Timer {
     }
 
     public boolean needUpdate() {
-        boolean f = accumulator >= interval;
+        return accumulator >= interval;
+    }
+
+    public void update() {
         accumulator -= interval;
-        return f;
     }
 }

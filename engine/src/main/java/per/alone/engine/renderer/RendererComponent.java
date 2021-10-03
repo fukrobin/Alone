@@ -1,7 +1,7 @@
 package per.alone.engine.renderer;
 
-import per.alone.engine.context.EngineContext;
-import per.alone.engine.kernel.EngineComponent;
+import per.alone.engine.core.EngineComponent;
+import per.alone.engine.core.EngineContext;
 import per.alone.stage.Window;
 
 /**
