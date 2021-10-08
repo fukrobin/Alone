@@ -1,5 +1,6 @@
 package per.alone.engine.ui;
 
+import jakarta.inject.Singleton;
 import per.alone.engine.annotation.Order;
 import per.alone.engine.config.GuiContext;
 import per.alone.engine.core.EngineContext;
@@ -10,6 +11,7 @@ import per.alone.stage.Window;
  * @author Administrator
  */
 @Order
+@Singleton
 public class GuiRenderer implements RendererComponent {
     private final GuiContext guiContext;
 
