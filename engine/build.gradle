@@ -8,6 +8,9 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+ext {
+    weldVersion = '4.0.2.Final'
+}
 
 dependencies {
     implementation project(':event')
@@ -43,6 +46,10 @@ dependencies {
     /*log*/
     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.1'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+    implementation "org.jboss.weld.se:weld-se-shaded:${weldVersion}"
+    testImplementation "org.jboss.weld.se:weld-se-shaded:${weldVersion}"
+
 }
 
 test {

@@ -42,4 +42,8 @@ public class EventQueue {
             iterator.remove();
         }
     }
+
+    public void fire(Event event) {
+        dispatcher.dispatchEvent(event);
+    }
 }

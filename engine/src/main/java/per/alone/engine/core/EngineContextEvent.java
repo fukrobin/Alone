@@ -1,5 +1,6 @@
 package per.alone.engine.core;
 
+import per.alone.engine.event.EngineEvent;
 import per.alone.event.Event;
 import per.alone.event.EventType;
 
@@ -10,7 +11,7 @@ import per.alone.event.EventType;
  * @author fkrobin
  * @date 2021/9/19 22:56
  */
-public class EngineContextEvent extends Event {
+public class EngineContextEvent extends EngineEvent {
 
     /**
      * 代表任何类型的引擎事件
@@ -19,10 +20,16 @@ public class EngineContextEvent extends Event {
             new EventType<>(EventType.ROOT, "ENGINE_CONTEXT");
 
     /**
-     * 当引擎上下文准备好后将会触发此类型的事件
+     * 当引擎上下文准备好后将会触发此类型的事件。此时引擎的组件还未加载
      */
-    public static final EventType<EngineContextEvent> PREPARED_ENGINE_CONTEXT =
-            new EventType<>(EngineContextEvent.ANY, "PREPARED_ENGINE_CONTEXT");
+    public static final EventType<EngineContextEvent> ENGINE_CONTEXT_PREPARED =
+            new EventType<>(EngineContextEvent.ANY, "ENGINE_CONTEXT_PREPARED");
+
+    /**
+     * 当引擎上下文加载完成所有的组件后
+     */
+    public static final EventType<EngineContextEvent> ENGINE_CONTEXT_LOADED =
+            new EventType<>(EngineContextEvent.ANY, "ENGINE_CONTEXT_LOADED");
 
     public EngineContextEvent(EngineContext source, EventType<? extends Event> eventType) {
         super(source, eventType);
@@ -36,6 +43,6 @@ public class EngineContextEvent extends Event {
 
     @Override
     public EngineContext getSource() {
-        return (EngineContext) super.getSource();
+        return super.getSource();
     }
 }

@@ -1,21 +1,49 @@
 package per.alone.engine.core;
 
-import java.util.EventListener;
+import per.alone.event.AloneEventListener;
+import per.alone.event.EventType;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * 监听 EngineContextEvent
- * 基于观察者设计模式的标准java.util.EventListener接口
+ * 扩展了 EngineContextListener，添加了获取支持的事件类型
  *
  * @author fkrobin
- * @date 2021/9/19 23:19
+ * @date 2021/9/20 17:53
  */
-public interface EngineContextListener<E extends EngineContextEvent> extends EventListener {
+public interface EngineContextListener extends AloneEventListener<EngineContextEvent> {
+
+    @Override
+    default void onAloneEvent(EngineContextEvent event) {
+        onEngineContextEvent(event);
+    }
 
     /**
-     * 处理一个引擎上下文事件，可以通过{@link EngineContextEvent#getEventType()}
-     * 判断发生的事件的具体类型
+     * 默认支持任何 EngineContextEvent 的事件类型，
+     * 实现可以根据需要进行更加具体的限制
      *
-     * @param engineContextEvent 引擎上下文事件
+     * @return 支持任何 EngineContextEvent 的事件类型
      */
-    void onEngineContextEvent(EngineContextEvent engineContextEvent);
+    @Override
+    default List<EventType<EngineContextEvent>> supportsEventTypes() {
+        return Collections.singletonList(EngineContextEvent.ANY);
+    }
+
+    default void onEngineContextEvent(EngineContextEvent engineContextEvent) {
+        EventType<EngineContextEvent> eventType = engineContextEvent.getEventType();
+        if (eventType.equals(EngineContextEvent.ENGINE_CONTEXT_PREPARED)) {
+            onEngineContextPrepared(engineContextEvent);
+        } else if (eventType.equals(EngineContextEvent.ENGINE_CONTEXT_LOADED)) {
+            onEngineContextLoaded(engineContextEvent);
+        }
+    }
+
+    default void onEngineContextPrepared(EngineContextEvent engineContextEvent) {
+
+    }
+
+    default void onEngineContextLoaded(EngineContextEvent engineContextEvent) {
+
+    }
 }

@@ -8,17 +8,14 @@ import org.lwjgl.openal.ALCCapabilities;
 import per.alone.engine.core.EngineComponent;
 import per.alone.engine.core.EngineContext;
 import per.alone.engine.core.EngineContextEvent;
-import per.alone.engine.core.SmartEngineContextListener;
+import per.alone.engine.core.EngineContextListener;
 import per.alone.engine.scene.Camera;
 import per.alone.engine.util.Transformation;
 import per.alone.event.EventType;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.openal.AL10.alDistanceModel;
 import static org.lwjgl.openal.ALC10.*;
@@ -27,7 +24,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 /**
  * @author Administrator
  */
-public class SoundManager implements EngineComponent, SmartEngineContextListener {
+public class SoundManager implements EngineComponent, EngineContextListener {
 
     private final List<SoundBuffer> soundBufferList;
 
@@ -48,8 +45,8 @@ public class SoundManager implements EngineComponent, SmartEngineContextListener
     }
 
     @Override
-    public boolean supportsEventType(EventType<? extends EngineContextEvent> eventType) {
-        return eventType.equals(EngineContextEvent.PREPARED_ENGINE_CONTEXT);
+    public List<EventType<EngineContextEvent>> supportsEventTypes() {
+        return Collections.singletonList(EngineContextEvent.ENGINE_CONTEXT_LOADED);
     }
 
     @Override

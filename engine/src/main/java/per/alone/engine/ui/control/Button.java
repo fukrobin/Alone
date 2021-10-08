@@ -6,7 +6,7 @@ import per.alone.engine.ui.Canvas;
 import per.alone.engine.ui.behavior.LabeledBehavior;
 import per.alone.engine.ui.text.Alignment;
 import per.alone.engine.ui.text.Text;
-import per.alone.event.EventHandler;
+import per.alone.event.AloneEventListener;
 import per.alone.stage.input.ActionEvent;
 
 /**
@@ -70,7 +70,7 @@ public class Button extends Labeled {
      *
      * @param handler 处理程序
      */
-    public void setOnAction(EventHandler<ActionEvent> handler) {
+    public void setOnAction(AloneEventListener<ActionEvent> handler) {
         setEventHandler(ActionEvent.ACTION, handler);
     }
 }

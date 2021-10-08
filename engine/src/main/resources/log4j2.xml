@@ -42,8 +42,8 @@
         <!--includeLocation：输出位置信息需要栈快照，对性能影响很大，所以异步logger默认关闭该功能，可通过设置为true打开-->
         <!--AppenderRef：指定该日志输出到哪个Appender-->
         <!--过滤掉spring和hibernate的一些无用的debug信息-->
-        <logger name="per.alone" level="TRACE"/>
-        <root level="all">
+        <logger name="per.alone" level="INFO"/>
+        <root level="INFO">
             <appender-ref ref="CONSOLE-APPENDER"/>
         </root>
     </Loggers>

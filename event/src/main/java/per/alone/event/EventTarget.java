@@ -8,5 +8,5 @@ package per.alone.event;
  */
 public interface EventTarget {
 
-    <T extends Event> CompositeEventHandler<T> buildEventHandlerChain(T event);
+    <T extends Event> CompositeAloneEventListener<T> buildEventHandlerChain(T event);
 }

@@ -9,7 +9,7 @@ package per.alone.event;
 public class EventUtil {
 
     public static <T extends Event> void fireEvent(T event, EventTarget eventTarget) {
-        CompositeEventHandler<T> handler = eventTarget.buildEventHandlerChain(event);
+        CompositeAloneEventListener<T> handler = eventTarget.buildEventHandlerChain(event);
         handler.dispatchEvent(event);
     }
 

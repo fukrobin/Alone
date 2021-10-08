@@ -49,7 +49,7 @@ public abstract class Widget implements EventTarget {
 
     private WidgetBehavior<? extends Widget> behavior;
 
-    private Map<EventType<? extends Event>, CompositeEventHandler<? extends Event>> eventHandlerMap;
+    private Map<EventType<? extends Event>, CompositeAloneEventListener<? extends Event>> eventHandlerMap;
 
     protected Widget() {
         this.position = new Vector2f();
@@ -60,15 +60,16 @@ public abstract class Widget implements EventTarget {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Event> CompositeEventHandler<T> buildEventHandlerChain(T event) {
-        CompositeEventHandler<T> temp = new CompositeEventHandler<>();
+    public <T extends Event> CompositeAloneEventListener<T> buildEventHandlerChain(T event) {
+        CompositeAloneEventListener<T> temp = new CompositeAloneEventListener<>();
         Widget cur = this;
         do {
-            CompositeEventHandler<T> compositeEventHandler = (CompositeEventHandler<T>) cur.eventHandlerMap.get(
+            CompositeAloneEventListener<T>
+                    compositeAloneEventListener = (CompositeAloneEventListener<T>) cur.eventHandlerMap.get(
                     event.getEventType());
-            Set<EventHandler<? super T>> handlerSet = compositeEventHandler.getEventHandlers();
-            for (EventHandler<? super T> handler : handlerSet) {
-                temp.addEventHandler(handler);
+            Set<AloneEventListener<? super T>> handlerSet = compositeAloneEventListener.getEventListeners();
+            for (AloneEventListener<? super T> handler : handlerSet) {
+                temp.addEventListener(handler);
             }
             cur = cur.getParent();
         } while (cur != null);
@@ -78,31 +79,31 @@ public abstract class Widget implements EventTarget {
     @SuppressWarnings("unchecked")
     public final <T extends Event> void addEventHandler(
             final EventType<T> eventType,
-            final EventHandler<? super T> eventHandler) {
-        CompositeEventHandler<T> handler =
-                (CompositeEventHandler<T>) eventHandlerMap.computeIfAbsent(eventType,
-                                                                           type -> new CompositeEventHandler<T>());
-        handler.addEventHandler(eventHandler);
+            final AloneEventListener<? super T> aloneEventListener) {
+        CompositeAloneEventListener<T> handler =
+                (CompositeAloneEventListener<T>) eventHandlerMap.computeIfAbsent(eventType,
+                                                                                 type -> new CompositeAloneEventListener<T>());
+        handler.addEventListener(aloneEventListener);
     }
 
     @SuppressWarnings("unchecked")
     public final <T extends Event> void removeEventHandler(
             final EventType<T> eventType,
-            final EventHandler<? super T> eventHandler) {
+            final AloneEventListener<? super T> aloneEventListener) {
         if (eventHandlerMap.containsKey(eventType)) {
-            CompositeEventHandler<T> handler = (CompositeEventHandler<T>) eventHandlerMap.get(eventType);
-            handler.removeEventHandler(eventHandler);
+            CompositeAloneEventListener<T> handler = (CompositeAloneEventListener<T>) eventHandlerMap.get(eventType);
+            handler.removeEventListener(aloneEventListener);
         }
     }
 
     @SuppressWarnings("unchecked")
     protected final <T extends Event> void setEventHandler(
             final EventType<T> eventType,
-            final EventHandler<? super T> eventHandler) {
-        CompositeEventHandler<T> compositeEventHandler =
-                (CompositeEventHandler<T>) eventHandlerMap.computeIfAbsent(eventType,
-                                                                           eventType1 -> new CompositeEventHandler<>());
-        compositeEventHandler.setEventHandler(eventHandler);
+            final AloneEventListener<? super T> aloneEventListener) {
+        CompositeAloneEventListener<T> compositeAloneEventListener =
+                (CompositeAloneEventListener<T>) eventHandlerMap.computeIfAbsent(eventType,
+                                                                                 eventType1 -> new CompositeAloneEventListener<>());
+        compositeAloneEventListener.setEventListener(aloneEventListener);
     }
 
     //////////////////////////

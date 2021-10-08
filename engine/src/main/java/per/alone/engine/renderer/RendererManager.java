@@ -1,16 +1,18 @@
 package per.alone.engine.renderer;
 
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import per.alone.engine.Ordered;
 import per.alone.engine.annotation.AnnotationOrderComparator;
 import per.alone.engine.annotation.Order;
 import per.alone.engine.core.EngineContext;
 import per.alone.engine.core.EngineContextEvent;
-import per.alone.engine.core.SmartEngineContextListener;
+import per.alone.engine.core.EngineContextListener;
 import per.alone.engine.util.GLHelp;
 import per.alone.event.EventType;
 import per.alone.stage.Window;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +27,8 @@ import static org.lwjgl.opengl.GL11.*;
  * @date 2020/3/27 21:29
  **/
 @Slf4j
-public final class RendererManager implements SmartEngineContextListener {
+@Singleton
+public final class RendererManager implements RendererComponent, EngineContextListener {
     /**
      * 用户自定义渲染器
      */
@@ -38,14 +41,18 @@ public final class RendererManager implements SmartEngineContextListener {
     }
 
     @Override
-    public boolean supportsEventType(EventType<? extends EngineContextEvent> eventType) {
-        return eventType.equals(EngineContextEvent.PREPARED_ENGINE_CONTEXT);
+    public List<EventType<EngineContextEvent>> supportsEventTypes() {
+        return Collections.singletonList(EngineContextEvent.ENGINE_CONTEXT_LOADED);
     }
 
     @Override
-    public void onEngineContextEvent(EngineContextEvent engineContextEvent) {
+    public void onEngineContextLoaded(EngineContextEvent engineContextEvent) {
         List<RendererComponent> components = engineContextEvent.getSource().getComponents(RendererComponent.class);
-        rendererList.addAll(components);
+        for (RendererComponent component : components) {
+            if (!(component instanceof RendererManager)) {
+                addRenderer(component);
+            }
+        }
 
         GLHelp.setGLState();
     }
@@ -95,5 +102,10 @@ public final class RendererManager implements SmartEngineContextListener {
 
         AnnotationOrderComparator.sort(rendererList);
         dirty = false;
+    }
+
+    @Override
+    public void close() {
+
     }
 }

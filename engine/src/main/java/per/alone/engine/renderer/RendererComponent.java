@@ -6,7 +6,7 @@ import per.alone.stage.Window;
 
 /**
  * 渲染器组件
- * 渲染组件，默认在更新期间莫作任何操作
+ * 渲染组件，默认在更新期间不作任何操作
  *
  * @author fkrobin
  * @date 2021/9/19 22:33
